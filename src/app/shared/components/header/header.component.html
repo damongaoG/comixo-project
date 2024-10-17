@@ -1,0 +1,152 @@
+<!-- HEADER AREA START -->
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Comixo<span>.</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav m-auto mb-2 mt-0 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#banner">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#new-comics">Comics</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#blog">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-bs-toggle="modal" data-bs-target="#contact-modal">Contact</a>
+        </li>
+      </ul>
+      <div class="menu-action d-flex">
+        <div class="action-icon">
+          <a href="bookmark.html" class="menu-icon"><i class="fa-solid fa-bookmark"></i></a>
+          <a href="cart.html" class="menu-icon"><span>2</span><i class="fa-solid fa-cart-shopping"></i></a>
+          <a data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" class="menu-icon mobile-v-show"><i class="fa-solid fa-magnifying-glass"></i></a>
+        </div>
+        <a href="#" class="button-secondary">Free Comics</a>
+        <a href="#" class="ham-button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+          <div class="hamburger-menu">
+            <div class="nav-line"></div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- right-menu modal -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasRightLabel">Quick Menu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body side-menu">
+    <form>
+      <input type="text" class="form-control" placeholder="Search by Comic Name">
+      <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+    <div class="row">
+      <div class="col-lg-6 menu-comic">
+        <a href="comic_details.html"><img src="assets/images/comic1.png" alt="comic" class="img-fluid"></a>
+      </div>
+      <div class="col-lg-6 menu-comic">
+        <a href="comic_details.html"><img src="assets/images/popular1.png" alt="comic" class="img-fluid"></a>
+      </div>
+      <div class="col-lg-6 menu-comic">
+        <a href="comic_details.html"><img src="assets/images/popular2.png" alt="comic" class="img-fluid"></a>
+      </div>
+      <div class="col-lg-6 menu-comic">
+        <a href="comic_details.html"><img src="assets/images/comic3.png" alt="comic" class="img-fluid"></a>
+      </div>
+    </div>
+    <div class="row pt-5">
+      <div class="col-lg-12 text-center">
+        <a href="#" class="button-primary">Browse All</a>
+      </div>
+    </div>
+    <div class="social-media mobile-v-hide text-center">
+      <p>Follow Us</p>
+      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+      <a href="#"><i class="fa-brands fa-twitter"></i></a>
+      <a href="#"><i class="fa-brands fa-twitch"></i></a>
+      <a href="#"><i class="fa-brands fa-youtube"></i></a>
+    </div>
+  </div>
+</div>
+<!-- contact modal -->
+<div class="modal fade" id="contact-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Contact Us</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-7">
+              <div class="row">
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" placeholder="Your Name">
+                </div>
+                <div class="col-lg-6">
+                  <input type="email" class="form-control" placeholder="Your Email">
+                </div>
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" placeholder="Your Phone">
+                </div>
+                <div class="col-lg-6">
+                  <input type="text" class="form-control" placeholder="Subject">
+                </div>
+                <div class="col-lg-12">
+                  <textarea class="form-control" placeholder="Write Your Comment Here..." rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="contact-item">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus odit aliquid consectetur, veniam.</p>
+                <div class="row">
+                  <div class="col-6 col-lg-6 contact-info">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <h3>Address:</h3>
+                    <p>Dhanmondi Road No. 32, Dhaka.</p>
+                  </div>
+                  <div class="col-6 col-lg-6 contact-info">
+                    <i class="fa-solid fa-phone"></i>
+                    <h3>Phone:</h3>
+                    <p>+(123) 450 336 789</p>
+                  </div>
+                  <div class="col-6 col-lg-6 contact-info mb-0">
+                    <i class="fa-solid fa-envelope"></i>
+                    <h3>Email:</h3>
+                    <p>{{email}}</p>
+                  </div>
+                  <div class="col-6 col-lg-6 contact-info mb-0">
+                    <i class="fa-solid fa-wifi"></i>
+                    <h3>Connect:</h3>
+                    <div class="social">
+                      <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                      <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                      <a href="#"><i class="fa-brands fa-twitch"></i></a>
+                      <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="button-primary">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- HEADER AREA ENDS -->

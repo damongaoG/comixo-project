@@ -71,13 +71,13 @@
 
   ]
 	});
-	
+
     // preloader js
     $(window).on('load', function () {
         $('#preloader').delay(1000).fadeOut(1000);
 
     });
-	
+
 	//animation scroll js
 	var html_body = $('html, body');
 	$('.navbar a, #backtotop #backtotop-value').on('click', function () {
@@ -93,12 +93,12 @@
 		}
 	});
 
-	// smooth scroll js 
+	// smooth scroll js
 	$(window).scroll(function () {
 		var scrolling = $(this).scrollTop();
 		var stikey = $('.sticky-top');
-		var old_star = "images/star.png";
-		var new_star = "images/star-red.png";
+		var old_star = "assets/images/star.png";
+		var new_star = "assets/images/star-red.png";
 
 		if (scrolling >= 950 && scrolling <= 1910 ||
 			scrolling >= 4150 && scrolling <= 5160) {

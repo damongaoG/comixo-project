@@ -35,9 +35,22 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/styles/all.min.css",
+              "src/assets/styles/bootstrap.min.css",
+              "src/assets/styles/slick.css",
+              "src/assets/styles/venobox.min.css",
+              "src/assets/styles/style.css",
+              "src/assets/styles/responsive.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/jquery-3.6.3.min.js",
+              "src/assets/js/bootstrap.bundle.min.js",
+              "src/assets/js/slick.min.js",
+              "src/assets/js/venobox.min.js",
+              "src/assets/js/counter.js",
+              "src/assets/js/waypoints.min.js",
+              "src/assets/js/custom.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -91,9 +104,22 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/styles/all.min.css",
+              "src/assets/styles/bootstrap.min.css",
+              "src/assets/styles/slick.css",
+              "src/assets/styles/venobox.min.css",
+              "src/assets/styles/style.css",
+              "src/assets/styles/responsive.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/jquery-3.6.3.min.js",
+              "src/assets/js/bootstrap.bundle.min.js",
+              "src/assets/js/slick.min.js",
+              "src/assets/js/venobox.min.js",
+              "src/assets/js/counter.js",
+              "src/assets/js/waypoints.min.js",
+              "src/assets/js/custom.js"
+            ]
           }
         }
       }

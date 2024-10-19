@@ -1,20 +1,21 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import './App.css';
-import Navbar from "./components/Navbar/Navbar";
-import OffcanvasMenu from "./components/OffcanvasMenu/OffcanvasMenu";
-import ContactModal from "./components/ContactModal/ContactModal";
+import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import Preloader from "./components/Preloader/Preloader";
-import Banner from "./components/Banner/Banner";
+
+const Home = React.lazy(() => import('./components/Home/Home'));
 
 function App() {
   return (
-    <>
-      <Preloader />
-      <Navbar />
-      <OffcanvasMenu />
-      <ContactModal />
-      <Banner />
-    </>
+    <Router>
+      <Suspense fallback={<Preloader/>}>
+        <Routes>
+          <Route path="/" element={<Home/>}></Route>
+          <Route path="/home" element={<Home/>}></Route>
+          <Route path="*" element={<Navigate to="/home" replace />}></Route>
+        </Routes>
+      </Suspense>
+    </Router>
   );
 }
 

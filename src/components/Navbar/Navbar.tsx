@@ -1,12 +1,13 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 const Navbar: React.FC = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light sticky-top">
       <div className="container">
-        <a className="navbar-brand" href="index.html">
+        <Link className="navbar-brand" to="/">
           Comixo<span>.</span>
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -21,9 +22,9 @@ const Navbar: React.FC = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav m-auto mb-2 mt-0 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link" href="#banner">
+              <Link className="nav-link" to="/">
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#about">
@@ -70,7 +71,9 @@ const Navbar: React.FC = () => {
                 <i className="fa-solid fa-magnifying-glass"></i>
               </a>
             </div>*/}
-            <a href="#" className="button-secondary">
+            <a data-bs-toggle="modal"
+               data-bs-target="#contact-modal"
+               href="#" className="button-secondary">
               Free Comics
             </a>
             <a

@@ -8,6 +8,7 @@ import Brand from "../Brand/Brand";
 import NewComics from "../NewComics/NewComics";
 import PopularSection from "../PopularSection/PopularSection";
 import PricePlanSection from "../PricePlanSection/PricePlanSection";
+import Footer from "../Footer/Footer";
 
 const Home: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
       <NewComics/>
       <PopularSection/>
       <PricePlanSection/>
+      <Footer/>
     </div>
   )
 };

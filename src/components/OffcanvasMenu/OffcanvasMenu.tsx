@@ -75,7 +75,7 @@ const OffcanvasMenu: React.FC = () => {
             </a>
           </div>
         </div>
-        <div className="social-media mobile-v-hide text-center">
+        {/*<div className="social-media mobile-v-hide text-center">
           <p>Follow Us</p>
           <a href="#">
             <i className="fa-brands fa-facebook-f"></i>
@@ -89,7 +89,7 @@ const OffcanvasMenu: React.FC = () => {
           <a href="#">
             <i className="fa-brands fa-youtube"></i>
           </a>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

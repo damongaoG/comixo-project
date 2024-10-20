@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import {Link} from "react-router-dom";
 
 declare const $: any;
 
@@ -48,9 +49,9 @@ const NewComics: React.FC = () => {
                     </p>
                   </div>
                   <div className="col-4 col-lg-4 text-end">
-                    <a href="/comic_details.html">
+                    <Link to="/detail">
                       <i className="fa-solid fa-arrow-right"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -79,9 +80,9 @@ const NewComics: React.FC = () => {
                     </p>
                   </div>
                   <div className="col-4 col-lg-4 text-end">
-                    <a href="/comic_details.html">
+                    <Link to="/detail">
                       <i className="fa-solid fa-arrow-right"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -110,9 +111,9 @@ const NewComics: React.FC = () => {
                     </p>
                   </div>
                   <div className="col-4 col-lg-4 text-end">
-                    <a href="/comic_details.html">
+                    <Link to="/detail">
                       <i className="fa-solid fa-arrow-right"></i>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

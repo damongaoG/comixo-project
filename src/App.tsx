@@ -2,6 +2,7 @@ import React, {Suspense} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 import Preloader from "./components/Preloader/Preloader";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
 const Home = React.lazy(() => import('./components/Home/Home'));
 const Detail = React.lazy(() => import('./components/Detail/Detail'));
@@ -9,6 +10,7 @@ const Detail = React.lazy(() => import('./components/Detail/Detail'));
 function App() {
   return (
     <Router>
+      <ScrollToTop/>
       <Suspense fallback={<Preloader/>}>
         <Routes>
           <Route path="/" element={<Home/>}></Route>

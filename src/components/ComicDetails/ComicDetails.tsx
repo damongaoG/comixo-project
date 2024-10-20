@@ -24,14 +24,14 @@ const ComicDetails: React.FC = () => {
               />
             </div>
             <div className="col-lg-6 comic-detail-txt">
-              <div className="stars">
+              {/*<div className="stars">
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star-half-stroke"></i>
                 <span>4.5</span>
-              </div>
+              </div>*/}
               <h3>Shadow Fighter V: Comic Book.</h3>
               <span>Storyline</span>
               <p>
@@ -39,11 +39,11 @@ const ComicDetails: React.FC = () => {
                 perferendis veritatis totam cupiditate excepturi delectus, ullam iste.
                 Accusantium nobis, repellendus alias fugit excepturi iure!
               </p>
-              <h4>$236.24</h4>
+              {/*<h4>$236.24</h4>*/}
               {/*<a href="cart.html" className="button-primary">Add To Cart</a>*/}
-              <a href="bookmark.html" className="bookmark-btn">
-                <i className="fa-solid fa-bookmark"></i>
-              </a>
+              {/*<a href="bookmark.html" className="bookmark-btn">*/}
+              {/*  <i className="fa-solid fa-bookmark"></i>*/}
+              {/*</a>*/}
             </div>
           </div>
         </div>

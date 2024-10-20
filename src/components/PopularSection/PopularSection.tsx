@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 const PopularSection: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ const PopularSection: React.FC = () => {
               <p>2024</p>
               <div className="col-lg-10 ms-auto">
                 <img src="/assets/images/popular1.png" alt="comic-book" className="img-fluid"/>
-                <a href="comic_details.html">Shadow Fighter II</a>
+                <Link to="/detail">Shadow Fighter II</Link>
               </div>
             </div>
           </div>
@@ -25,7 +26,7 @@ const PopularSection: React.FC = () => {
               <p>2018</p>
               <div className="col-lg-10 me-auto">
                 <img src="/assets/images/popular2.png" alt="comic-book" className="img-fluid"/>
-                <a href="comic_details.html">Super Hero V</a>
+                <Link to="/detail">Super Hero V</Link>
               </div>
             </div>
           </div>
@@ -34,7 +35,7 @@ const PopularSection: React.FC = () => {
               <p>2017</p>
               <div className="col-lg-10 ms-auto">
                 <img src="/assets/images/popular4.png" alt="comic-book" className="img-fluid"/>
-                <a href="comic_details.html">Power Ranger X</a>
+                <Link to="/detail">Power Ranger X</Link>
               </div>
             </div>
           </div>
@@ -43,7 +44,7 @@ const PopularSection: React.FC = () => {
               <p>2016</p>
               <div className="col-lg-10 me-auto">
                 <img src="/assets/images/popular3.png" alt="comic-book" className="img-fluid"/>
-                <a href="comic_details.html">Dr. Stranger</a>
+                <Link to="/detail">Dr. Stranger</Link>
               </div>
             </div>
           </div>

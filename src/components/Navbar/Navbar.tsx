@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
+import Home from "../Home/Home";
 
 const Navbar: React.FC = () => {
   return (
@@ -27,12 +28,12 @@ const Navbar: React.FC = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#about">
+              <a className="nav-link" href="/#about">
                 About
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#new-comics">
+              <a className="nav-link" href="/#new-comics">
                 Comics
               </a>
             </li>

@@ -7,6 +7,7 @@ import About from "../About/About";
 import Brand from "../Brand/Brand";
 import NewComics from "../NewComics/NewComics";
 import PopularSection from "../PopularSection/PopularSection";
+import PricePlanSection from "../PricePlanSection/PricePlanSection";
 
 const Home: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const Home: React.FC = () => {
       <Brand/>
       <NewComics/>
       <PopularSection/>
+      <PricePlanSection/>
     </div>
   )
 };

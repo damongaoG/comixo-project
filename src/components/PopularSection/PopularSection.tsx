@@ -42,7 +42,7 @@ const PopularSection: React.FC = () => {
             <div className="popular-item right mb-0">
               <p>2016</p>
               <div className="col-lg-10 me-auto">
-                <img src="/assets/mages/popular3.png" alt="comic-book" className="img-fluid"/>
+                <img src="/assets/images/popular3.png" alt="comic-book" className="img-fluid"/>
                 <a href="comic_details.html">Dr. Stranger</a>
               </div>
             </div>

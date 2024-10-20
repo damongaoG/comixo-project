@@ -4,14 +4,6 @@ declare const $: any;
 
 const NewComics: React.FC = () => {
   useEffect(() => {
-    // if ($('.venobox').venobox) {
-    //   $('.venobox').venobox({
-    //     selector: ".button-circular, .veno-img",
-    //     numeration: true,
-    //     infinigall: true,
-    //     share: true,
-    //   });
-    // }
     $('.venobox .veno-img').venobox({
       numeration: true,
       infinigall: true,

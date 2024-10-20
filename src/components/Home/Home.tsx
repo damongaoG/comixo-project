@@ -6,6 +6,7 @@ import SignInAndSignUp from "../SignInAndSignUp/SignInAndSignUp";
 import About from "../About/About";
 import Brand from "../Brand/Brand";
 import NewComics from "../NewComics/NewComics";
+import PopularSection from "../PopularSection/PopularSection";
 
 const Home: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const Home: React.FC = () => {
       <About/>
       <Brand/>
       <NewComics/>
+      <PopularSection/>
     </div>
   )
 };

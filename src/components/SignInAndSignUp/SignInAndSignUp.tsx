@@ -43,7 +43,7 @@ const SignInAndSignUp: React.FC = () => {
           </div>
           <Form
             wrapperCol={{span: 16}}
-            autoComplete="off"
+            autoComplete="true"
             initialValues={{remember: true}}
           >
             <div className="modal-body">

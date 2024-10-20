@@ -5,6 +5,7 @@ import OffcanvasMenu from "../OffcanvasMenu/OffcanvasMenu";
 import SignInAndSignUp from "../SignInAndSignUp/SignInAndSignUp";
 import About from "../About/About";
 import Brand from "../Brand/Brand";
+import NewComics from "../NewComics/NewComics";
 
 const Home: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const Home: React.FC = () => {
       < Banner/>
       <About/>
       <Brand/>
+      <NewComics/>
     </div>
   )
 };

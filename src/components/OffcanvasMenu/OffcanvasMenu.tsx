@@ -71,9 +71,9 @@ const OffcanvasMenu: React.FC = () => {
         </div>
         <div className="row pt-5">
           <div className="col-lg-12 text-center">
-            <Link to="/list" className="button-primary">
+            <a href="/list" className="button-primary">
               Browse All
-            </Link>
+            </a>
           </div>
         </div>
         {/*<div className="social-media mobile-v-hide text-center">

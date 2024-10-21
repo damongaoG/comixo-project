@@ -17,7 +17,7 @@ const Home: React.FC = () => {
       <Navbar/>
       <SignInAndSignUp/>
       <OffcanvasMenu/>
-      < Banner/>
+      <Banner/>
       <About/>
       <Brand/>
       <NewComics/>

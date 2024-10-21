@@ -10,7 +10,7 @@ const PopularSection: React.FC = () => {
             <span>Popular</span>
             <h3>Explore Our Creativity.</h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae blanditi.</p>
-            <a href="#" className="button-primary">Browse All</a>
+            <Link to="/list" className="button-primary">Browse All</Link>
           </div>
           <div className="col-lg-6 col-md-9 mobile-m-auto">
             <div className="popular-item">

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 const OffcanvasMenu: React.FC = () => {
   return (
@@ -32,47 +33,47 @@ const OffcanvasMenu: React.FC = () => {
         </form>
         <div className="row">
           <div className="col-lg-6 menu-comic">
-            <a href="comic_details.html">
+            <Link to="/detail">
               <img
                 src="/assets/images/comic1.png"
                 alt="comic"
                 className="img-fluid"
               />
-            </a>
+            </Link>
           </div>
           <div className="col-lg-6 menu-comic">
-            <a href="comic_details.html">
+            <Link to="/detail">
               <img
                 src="/assets/images/popular1.png"
                 alt="comic"
                 className="img-fluid"
               />
-            </a>
+            </Link>
           </div>
           <div className="col-lg-6 menu-comic">
-            <a href="comic_details.html">
+            <Link to="/detail">
               <img
                 src="/assets/images/popular2.png"
                 alt="comic"
                 className="img-fluid"
               />
-            </a>
+            </Link>
           </div>
           <div className="col-lg-6 menu-comic">
-            <a href="comic_details.html">
+            <Link to="/detail">
               <img
                 src="/assets/images/comic3.png"
                 alt="comic"
                 className="img-fluid"
               />
-            </a>
+            </Link>
           </div>
         </div>
         <div className="row pt-5">
           <div className="col-lg-12 text-center">
-            <a href="#" className="button-primary">
+            <Link to="/list" className="button-primary">
               Browse All
-            </a>
+            </Link>
           </div>
         </div>
         {/*<div className="social-media mobile-v-hide text-center">

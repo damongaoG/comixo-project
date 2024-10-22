@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Form, Input, Upload, Image, GetProp, UploadProps, UploadFile} from "antd";
+import {Form, Input, Upload, Image, GetProp, UploadProps, UploadFile, Button} from "antd";
 import './UploadBook.css';
 import TextArea from "antd/es/input/TextArea";
 import { PlusOutlined } from '@ant-design/icons';
@@ -70,7 +70,7 @@ const UploadBook: React.FC = () => {
 
         <Form.Item label="Upload Cover Image" valuePropName="fileList" getValueFromEvent={normFile}>
           <Upload
-            action="/upload.do"
+            action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
             listType="picture-card"
             fileList={fileList}
             onPreview={handlePreview}
@@ -90,6 +90,21 @@ const UploadBook: React.FC = () => {
               src={previewImage}
             />
           )}
+        </Form.Item>
+
+        <Form.Item label="Upload Content" valuePropName="fileList" getValueFromEvent={normFile}>
+          <Upload action="/upload.do" listType="picture-card">
+            <button style={{ border: 0, background: 'none' }} type="button">
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Upload</div>
+            </button>
+          </Upload>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ offset: 6, span: 16 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Form.Item>
       </Form>
     </section>

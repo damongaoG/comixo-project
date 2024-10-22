@@ -4,9 +4,9 @@ import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom
 import Preloader from "./components/Preloader/Preloader";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 
-const Home = React.lazy(() => import('./components/Home/Home'));
-const Detail = React.lazy(() => import('./components/Detail/Detail'));
-const List = React.lazy(() => import('./components/List/List'));
+const Home = React.lazy(() => import('./pages/Home/Home'));
+const Detail = React.lazy(() => import('./pages/Detail/Detail'));
+const List = React.lazy(() => import('./pages/List/List'));
 const BookUploadPage = React.lazy(() => import('./components/BookUploadPage/BookUploadPage'));
 
 function App() {

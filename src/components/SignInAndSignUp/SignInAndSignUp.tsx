@@ -1,24 +1,29 @@
-import React from "react";
-import {Checkbox, Form, Input} from 'antd';
+import React, { useState } from "react";
+import { Checkbox, Form, Input } from 'antd';
 import './SignInAndSignUp.css';
-
-type FieldType = {
-  username?: string;
-  password?: string;
-  confirmPassword?: string;
-  remember?: string;
-}
+import { CustomerLoginDto } from "../../types/customer-login-dto";
 
 const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
 
   const handleSignUpClick = () => {
     setIsSignUp(true);
+    form.resetFields();
   };
 
   const handleSignInClick = () => {
     setIsSignUp(false);
+    form.resetFields();
   };
+
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    try {
+      
+    }
+  }
 
   return (
     <div
@@ -42,32 +47,32 @@ const SignInAndSignUp: React.FC = () => {
             ></button>
           </div>
           <Form
-            wrapperCol={{span: 16}}
+            wrapperCol={{ span: 16 }}
             autoComplete="true"
-            initialValues={{remember: true}}
+            initialValues={{ remember: true }}
           >
             <div className="modal-body">
               {/* Sign In Form */}
               {!isSignUp && (
                 <>
-                  <Form.Item<FieldType>
+                  <Form.Item<CustomerLoginDto>
                     label="Username"
                     name="username"
-                    rules={[{required: true, message: 'Please input your username!'}]}
+                    rules={[{ required: true, message: 'Please input your username!' }]}
                   >
-                    <Input/>
+                    <Input />
                   </Form.Item>
 
-                  <Form.Item<FieldType>
+                  <Form.Item<CustomerLoginDto>
                     label="Password"
                     name="password"
-                    rules={[{required: true, message: 'Please input your password!'}]}
+                    rules={[{ required: true, message: 'Please input your password!' }]}
                   >
-                    <Input.Password/>
+                    <Input.Password />
                   </Form.Item>
 
-                  <Form.Item<FieldType>
-                    name="remember"
+                  <Form.Item<CustomerLoginDto>
+                    name="rememberMe"
                     valuePropName="checked"
                   >
                     <Checkbox>Remember me</Checkbox>
@@ -84,20 +89,20 @@ const SignInAndSignUp: React.FC = () => {
               {/* Sign Up Form */}
               {isSignUp && (
                 <>
-                  <Form.Item<FieldType>
+                  <Form.Item
                     label="Username"
                     name="username"
-                    rules={[{required: true, message: 'Please input your username!'}]}
+                    rules={[{ required: true, message: 'Please input your username!' }]}
                   >
-                    <Input/>
+                    <Input />
                   </Form.Item>
 
-                  <Form.Item<FieldType>
+                  <Form.Item
                     label="Password"
                     name="password"
-                    rules={[{required: true, message: 'Please input your password!'}]}
+                    rules={[{ required: true, message: 'Please input your password!' }]}
                   >
-                    <Input.Password/>
+                    <Input.Password />
                   </Form.Item>
 
                   <Form.Item
@@ -110,7 +115,7 @@ const SignInAndSignUp: React.FC = () => {
                         required: true,
                         message: 'Please confirm your password!',
                       },
-                      ({getFieldValue}) => ({
+                      ({ getFieldValue }) => ({
                         validator(_, value) {
                           if (!value || getFieldValue('password') === value) {
                             return Promise.resolve();
@@ -120,7 +125,7 @@ const SignInAndSignUp: React.FC = () => {
                       }),
                     ]}
                   >
-                    <Input.Password/>
+                    <Input.Password />
                   </Form.Item>
 
                   {isSignUp && (
@@ -132,7 +137,9 @@ const SignInAndSignUp: React.FC = () => {
               )}
             </div>
             <div className="modal-footer">
-              <button type="submit" className="button-primary">
+              <button type="submit" className="button-primary"
+                disabled={loading}
+              >
                 {isSignUp ? 'Register' : 'Login'}
               </button>
             </div>

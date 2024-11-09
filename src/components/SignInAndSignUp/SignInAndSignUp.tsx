@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { Checkbox, Form, Input } from 'antd';
+import { Checkbox, Form, Input, message } from 'antd';
 import './SignInAndSignUp.css';
 import { CustomerLoginDto } from "../../types/customer-login-dto";
+import { RegistryDto } from "../../types/registry-dto";
+import { signIn, signUp } from "./api";
+import { ResultUserVo } from "../../types/result-user-vo";
 
 const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
@@ -21,7 +24,29 @@ const SignInAndSignUp: React.FC = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     try {
-      
+      if (isSignUp) {
+        const { username, password, nickName } = values;
+        const data: RegistryDto = { username, password, nickName, roleIds: ['2'] };
+        const response = await signUp(data);
+        console.log('sign up response:', response);
+      } else {
+        const { username, password, rememberMe } = values as CustomerLoginDto;
+        const response = await signIn({ username, password, rememberMe });
+        const result: ResultUserVo = response.data;
+        if (result.code === 1) {
+          const closeButton = document.querySelector('.modal .btn-close');
+          if (closeButton) {
+            (closeButton as HTMLElement).click();
+          }
+        } else {
+          message.error('Invalid email or password, please try again!');
+        }
+      }
+    } catch (error) {
+      console.error('Failed:', error);
+      message.error('Failed to sign in or sign up');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -50,15 +75,17 @@ const SignInAndSignUp: React.FC = () => {
             wrapperCol={{ span: 16 }}
             autoComplete="true"
             initialValues={{ remember: true }}
+            onFinish={onFinish}
+            clearOnDestroy={true}
           >
             <div className="modal-body">
               {/* Sign In Form */}
               {!isSignUp && (
                 <>
                   <Form.Item<CustomerLoginDto>
-                    label="Username"
+                    label="Email"
                     name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Please input your email!' }]}
                   >
                     <Input />
                   </Form.Item>
@@ -89,20 +116,27 @@ const SignInAndSignUp: React.FC = () => {
               {/* Sign Up Form */}
               {isSignUp && (
                 <>
-                  <Form.Item
-                    label="Username"
+                  <Form.Item<RegistryDto>
+                    label="Email"
                     name="username"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Please input your email!' }]}
                   >
                     <Input />
                   </Form.Item>
 
-                  <Form.Item
+                  <Form.Item<RegistryDto>
                     label="Password"
                     name="password"
                     rules={[{ required: true, message: 'Please input your password!' }]}
                   >
                     <Input.Password />
+                  </Form.Item>
+
+                  <Form.Item<RegistryDto>
+                    label="Name"
+                    name="nickName"
+                  >
+                    <Input />
                   </Form.Item>
 
                   <Form.Item

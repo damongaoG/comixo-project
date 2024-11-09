@@ -11,6 +11,17 @@ const SignInAndSignUp: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
+  const validateMessages = {
+    required: '${label} is required!',
+    types: {
+      email: '${label} is not a valid email!',
+      number: '${label} is not a valid number!',
+    },
+    number: {
+      range: '${label} must be between ${min} and ${max}',
+    },
+  };
+
   const handleSignUpClick = () => {
     setIsSignUp(true);
     form.resetFields();
@@ -26,9 +37,16 @@ const SignInAndSignUp: React.FC = () => {
     try {
       if (isSignUp) {
         const { username, password, nickName } = values;
-        const data: RegistryDto = { username, password, nickName, roleIds: ['2'] };
+        const data: RegistryDto = { username, password, nickName };
         const response = await signUp(data);
         console.log('sign up response:', response);
+        const result: ResultUserVo = response.data;
+        if (result.code === 1) {
+          message.success('The email has been sent. Please activate your account. ');
+          form.resetFields();
+        } else {
+          message.error('Failed to sign up');
+        }
       } else {
         const { username, password, rememberMe } = values as CustomerLoginDto;
         const response = await signIn({ username, password, rememberMe });
@@ -72,11 +90,13 @@ const SignInAndSignUp: React.FC = () => {
             ></button>
           </div>
           <Form
+            form={form}
             wrapperCol={{ span: 16 }}
             autoComplete="true"
             initialValues={{ remember: true }}
             onFinish={onFinish}
             clearOnDestroy={true}
+            validateMessages={validateMessages}
           >
             <div className="modal-body">
               {/* Sign In Form */}
@@ -119,7 +139,14 @@ const SignInAndSignUp: React.FC = () => {
                   <Form.Item<RegistryDto>
                     label="Email"
                     name="username"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{ required: true, type: 'email' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item<RegistryDto>
+                    label="Name"
+                    name="nickName"
                   >
                     <Input />
                   </Form.Item>
@@ -130,13 +157,6 @@ const SignInAndSignUp: React.FC = () => {
                     rules={[{ required: true, message: 'Please input your password!' }]}
                   >
                     <Input.Password />
-                  </Form.Item>
-
-                  <Form.Item<RegistryDto>
-                    label="Name"
-                    name="nickName"
-                  >
-                    <Input />
                   </Form.Item>
 
                   <Form.Item

@@ -1,8 +1,54 @@
-import React from 'react';
-import {Link} from "react-router-dom";
-import Home from "../../pages/Home/Home";
+import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+import { ResultUserVo } from '../../types/result-user-vo';
+import { Button, Dropdown, MenuProps, message, Space } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { logOut, reLogin } from './api';
+import { Result } from '../../types/result';
+
+const items: MenuProps['items'] = [
+  {
+    label: 'Log Out',
+    key: 'logout',
+  }
+];
 
 const Navbar: React.FC = () => {
+  const [isLogin, setLogin] = useState(false);
+
+  useEffect(() => {
+    const verifyLogin = async () => {
+      const response = await reLogin();
+      const result: ResultUserVo = await response.json();
+      if (result.code === 1) {
+        setLogin(true);
+      } else {
+        setLogin(false);
+      }
+      console.log('relogin response:', response);
+    };
+
+    verifyLogin();
+  }, []);
+
+  const handleMenuClick: MenuProps['onClick'] = async (e) => {
+    if (e.key === 'logout') {
+      const response = await logOut();
+      const result: Result = await response.json();
+      if (result.code === 1) {
+        message.success('Successfully logged out')
+        setLogin(false);
+      } else {
+        message.error('Log out failed');
+      }
+    }
+  };
+
+  const menuProps = {
+    items,
+    onClick: handleMenuClick,
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light sticky-top">
       <div className="container">
@@ -37,7 +83,7 @@ const Navbar: React.FC = () => {
                 Comics
               </a>
             </li>
-           {/* <li className="nav-item">
+            {/* <li className="nav-item">
               <a className="nav-link" href="#blog">
                 Blog
               </a>
@@ -54,7 +100,7 @@ const Navbar: React.FC = () => {
             </li>*/}
           </ul>
           <div className="menu-action d-flex">
-           {/* <div className="action-icon">
+            {/* <div className="action-icon">
               <a href="bookmark.html" className="menu-icon">
                 <i className="fa-solid fa-bookmark"></i>
               </a>
@@ -72,11 +118,22 @@ const Navbar: React.FC = () => {
                 <i className="fa-solid fa-magnifying-glass"></i>
               </a>
             </div>*/}
-            <a data-bs-toggle="modal"
-               data-bs-target="#contact-modal"
-               href="#" className="button-secondary">
-              Free Comics
-            </a>
+            {isLogin ? (
+              <Dropdown menu={menuProps}
+              >
+                <a
+                  className="button-secondary"
+                >
+                  <UserOutlined />
+                </a>
+              </Dropdown>
+            ) : (
+              <a data-bs-toggle="modal"
+                data-bs-target="#contact-modal"
+                href="#" className="button-secondary">
+                Free Comics
+              </a>
+            )}
             <a
               href="#"
               className="ham-button"

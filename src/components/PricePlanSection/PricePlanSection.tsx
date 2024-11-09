@@ -1,8 +1,21 @@
-import React from 'react';
+import { Modal } from 'antd';
+import React, { useState } from 'react';
 
 const PricePlanSection: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
     <section id="price-plan">
+      <Modal
+        title="Payment"
+        centered
+        open={modalOpen}
+        onOk={() => setModalOpen(false)}
+        onCancel={() => setModalOpen(false)}
+      >
+        <p>some contents...</p>
+        <p>some contents...</p>
+      </Modal>
       <div className="container">
         <div className="row">
           <div className="section-title">
@@ -20,7 +33,7 @@ const PricePlanSection: React.FC = () => {
                 <div className="col-lg-3 col-md-6 price-item text-center">
                   <span>Starter</span>
                   <p>Per Month</p>
-                  <img src="/assets/images/price1.png" alt="price-icon"/>
+                  <img src="/assets/images/price1.png" alt="price-icon" />
                   <h3>Free</h3>
                   <p><i className="fa-solid fa-check"></i> Free Home Delivery</p>
                   <p><i className="fa-solid fa-check"></i> Monthly Five Comic Books</p>
@@ -35,14 +48,19 @@ const PricePlanSection: React.FC = () => {
                 <div className="col-lg-3 col-md-6 price-item text-center">
                   <span>Basic</span>
                   <p>Per Month</p>
-                  <img src="/assets/images/price2.png" alt="price-icon"/>
+                  <img src="/assets/images/price2.png" alt="price-icon" />
                   <h3>$5.99</h3>
                   <p><i className="fa-solid fa-check"></i> Free Home Delivery</p>
                   <p><i className="fa-solid fa-check"></i> Monthly Five Comic Books</p>
                   <p><i className="fa-solid fa-check"></i> Download Limited Assets</p>
                   <p><i className="fa-solid fa-check"></i> Free Comic Arts</p>
                   <div className="price-btn">
-                    <a href="#" className="button-secondary">Choose Plan</a>
+                    <a href="#" className="button-secondary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setModalOpen(true)
+                      }}
+                    >Choose Plan</a>
                   </div>
                 </div>
 
@@ -51,7 +69,7 @@ const PricePlanSection: React.FC = () => {
                   <div className="mobile-v-bg">
                     <span>Recommended</span>
                     <p>Per Month</p>
-                    <img src="/assets/images/price3.png" alt="price-icon"/>
+                    <img src="/assets/images/price3.png" alt="price-icon" />
                     <h3>$19.9</h3>
                     <p><i className="fa-solid fa-check"></i> Free Home Delivery</p>
                     <p><i className="fa-solid fa-check"></i> Monthly Five Comic Books</p>
@@ -67,7 +85,7 @@ const PricePlanSection: React.FC = () => {
                 <div className="col-lg-3 col-md-6 price-item text-center">
                   <span>Superstars</span>
                   <p>Per Year</p>
-                  <img src="/assets/images/price4.png" alt="price-icon"/>
+                  <img src="/assets/images/price4.png" alt="price-icon" />
                   <h3>$29.9</h3>
                   <p><i className="fa-solid fa-check"></i> Free Home Delivery</p>
                   <p><i className="fa-solid fa-check"></i> Monthly Five Comic Books</p>

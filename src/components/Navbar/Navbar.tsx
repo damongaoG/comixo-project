@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { ResultUserVo } from '../../types/result-user-vo';
 import { Button, Dropdown, MenuProps, message, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { logOut, reLogin } from './api';
 import { Result } from '../../types/result';
+import { AuthContext } from '../../AuthContext';
 
 const items: MenuProps['items'] = [
   {
@@ -14,7 +15,9 @@ const items: MenuProps['items'] = [
 ];
 
 const Navbar: React.FC = () => {
-  const [isLogin, setLogin] = useState(false);
+  // const [isLogin, setLogin] = useState(false);
+  const { isLogin } = useContext(AuthContext)
+  const { setLogin } = useContext(AuthContext)
 
   useEffect(() => {
     const verifyLogin = async () => {

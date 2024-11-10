@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Checkbox, Form, Input, message } from 'antd';
 import './SignInAndSignUp.css';
 import { CustomerLoginDto } from "../../types/customer-login-dto";
 import { RegistryDto } from "../../types/registry-dto";
 import { signIn, signUp } from "./api";
 import { ResultUserVo } from "../../types/result-user-vo";
+import { AuthContext } from "../../AuthContext";
 
 const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const { setLogin } = useContext(AuthContext);
 
   const validateMessages = {
     required: '${label} is required!',
@@ -52,6 +54,7 @@ const SignInAndSignUp: React.FC = () => {
         const response = await signIn({ username, password, rememberMe });
         const result: ResultUserVo = response.data;
         if (result.code === 1) {
+          setLogin(true);
           const closeButton = document.querySelector('.modal .btn-close');
           if (closeButton) {
             (closeButton as HTMLElement).click();

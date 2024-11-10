@@ -8,7 +8,7 @@ export const reLogin = async () => {
     });
 }
 
-export const logOut = async () => {
+export const userLogOut = async () => {
     return fetch(process.env.REACT_APP_LOGOUT_URL!, {
         method: 'GET',
         headers: {

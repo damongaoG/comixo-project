@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { ResultUserVo } from '../../types/result-user-vo';
-import { Button, Dropdown, MenuProps, message, Space } from 'antd';
+import { Dropdown, MenuProps, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { logOut, reLogin } from './api';
+import {reLogin, userLogOut} from './api';
 import { Result } from '../../types/result';
 import { AuthContext } from '../../AuthContext';
 
@@ -15,7 +15,6 @@ const items: MenuProps['items'] = [
 ];
 
 const Navbar: React.FC = () => {
-  // const [isLogin, setLogin] = useState(false);
   const { isLogin } = useContext(AuthContext)
   const { setLogin } = useContext(AuthContext)
 
@@ -36,7 +35,7 @@ const Navbar: React.FC = () => {
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'logout') {
-      const response = await logOut();
+      const response = await userLogOut();
       const result: Result = await response.json();
       if (result.code === 1) {
         message.success('Successfully logged out')

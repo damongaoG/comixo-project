@@ -1,20 +1,75 @@
-import { Modal } from 'antd';
-import React, { useState } from 'react';
+import {Form, Modal} from 'antd';
+import React, {useState} from 'react';
+import {useMaskito} from "@maskito/react";
+import options from './mask';
+import {MaskitoOptions} from "@maskito/core";
 
 const PricePlanSection: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [form] = Form.useForm();
+
+  const cardNumberMask: MaskitoOptions = {
+    mask: [
+      /\d/, /\d/, /\d/, /\d/, ' ',
+      /\d/, /\d/, /\d/, /\d/, ' ',
+      /\d/, /\d/, /\d/, /\d/, ' ',
+      /\d/, /\d/, /\d/, /\d/,
+    ],
+  }
+
+  const cvvMask: MaskitoOptions = {
+    mask: [
+      /\d/, /\d/, /\d/,
+    ],
+  }
+
+  const maskedInputRef = useMaskito({options});
+  const cardNumberInputRef = useMaskito({options: cardNumberMask});
+  const cvvMaskInputRef = useMaskito({options: cvvMask})
 
   return (
     <section id="price-plan">
       <Modal
         title="Payment"
         centered
+        maskClosable={false}
         open={modalOpen}
         onOk={() => setModalOpen(false)}
         onCancel={() => setModalOpen(false)}
       >
-        <p>some contents...</p>
-        <p>some contents...</p>
+        <Form
+          form={form}
+          layout={'vertical'}
+        >
+          <Form.Item
+            name={'cardNumber'}
+            label={'Card number'}
+          >
+            <input
+              placeholder={'1234 5678 9012 3456'}
+              ref={cardNumberInputRef}
+            ></input>
+
+          </Form.Item>
+          <Form.Item
+            name={'expiryDate'}
+            label={'Expiry Date'}
+          >
+            <input
+              placeholder={'MM/YY'}
+              ref={maskedInputRef}
+            ></input>
+          </Form.Item>
+          <Form.Item
+            name={'cvv'}
+            label={'CVV'}
+          >
+            <input
+              placeholder={'123'}
+              ref={cvvMaskInputRef}
+            ></input>
+          </Form.Item>
+        </Form>
       </Modal>
       <div className="container">
         <div className="row">

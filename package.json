@@ -4,6 +4,9 @@
   "private": true,
   "proxy": "http://192.168.1.160:40002",
   "dependencies": {
+    "@maskito/core": "^3.2.0",
+    "@maskito/kit": "^3.2.0",
+    "@maskito/react": "^3.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

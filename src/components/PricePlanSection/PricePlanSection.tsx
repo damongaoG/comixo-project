@@ -1,16 +1,14 @@
 import {Form, Modal} from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useMaskito} from "@maskito/react";
 import options from './mask';
 import {MaskitoOptions} from "@maskito/core";
-import {listPlans, listProducts} from "./api";
-import {ResultListProduct} from "../../types/result-list-product";
-import {ResultListPlan} from "../../types/result-list-plan";
 import {Plan} from "../../types/plan";
+import usePlan from "./usePlan";
 
 const PricePlanSection: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [plans, setPlans] = useState(Array<Plan>);
+  const [plans, setPlans] = useState<Plan[]>([]);
   const [form] = Form.useForm();
 
   const cardNumberMask: MaskitoOptions = {
@@ -32,26 +30,7 @@ const PricePlanSection: React.FC = () => {
   const cardNumberInputRef = useMaskito({options: cardNumberMask});
   const cvvMaskInputRef = useMaskito({options: cvvMask})
 
-  useEffect(() => {
-    const listPlansArray = async () => {
-      const response = await listProducts();
-      const result: ResultListProduct = await response.json()
-      if (result.code === 1) {
-        const id = result.data[0].id;
-        const responseForPlan = await listPlans(id);
-        const resultForPlan: ResultListPlan = await responseForPlan.json();
-        if (resultForPlan.code === 1) {
-          setPlans(resultForPlan.data);
-        } else {
-          console.error('Error fetching plans', resultForPlan.error?.message);
-        }
-      } else {
-        console.error('Error fetching plans', result.error?.message);
-      }
-    };
-
-    listPlansArray().then();
-  }, [])
+  usePlan(setPlans);
 
   return (
     <section id="price-plan">

@@ -1,80 +1,132 @@
-import {Form, Modal} from 'antd';
-import React, {useState} from 'react';
-import {useMaskito} from "@maskito/react";
+import { Button, Form, message, Modal } from 'antd';
+import React, { useState } from 'react';
+import { useMaskito } from "@maskito/react";
 import options from './mask';
-import {MaskitoOptions} from "@maskito/core";
-import {Plan} from "../../types/plan";
+import { MaskitoOptions } from "@maskito/core";
+import { Plan } from "../../types/plan";
 import usePlan from "./usePlan";
+import { loadStripe } from '@stripe/stripe-js';
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 
 const PricePlanSection: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [form] = Form.useForm();
 
-  const cardNumberMask: MaskitoOptions = {
-    mask: [
-      /\d/, /\d/, /\d/, /\d/, ' ',
-      /\d/, /\d/, /\d/, /\d/, ' ',
-      /\d/, /\d/, /\d/, /\d/, ' ',
-      /\d/, /\d/, /\d/, /\d/,
-    ],
-  }
+  const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
-  const cvvMask: MaskitoOptions = {
-    mask: [
-      /\d/, /\d/, /\d/,
-    ],
-  }
+  const CardInputForm = ({ onSuccess, onCancel }: {
+    onSuccess: () => void;
+    onCancel: () => void;
+  }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
 
-  const maskedInputRef = useMaskito({options});
-  const cardNumberInputRef = useMaskito({options: cardNumberMask});
-  const cvvMaskInputRef = useMaskito({options: cvvMask})
+    const handleSubmit = async (event: React.FormEvent) => {
+      event.preventDefault();
+
+      if (!stripe || !elements) {
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const { error, paymentMethod } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: elements.getElement(CardElement)!,
+        });
+
+        if (error) {
+          message.error(error.message);
+          return;
+        }
+
+        if (paymentMethod) {
+          // Send the payment method ID to your backend
+          const response = await fetch(process.env.REACT_APP_CARD_URL!, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              token: paymentMethod.id,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.code === 1) {
+            message.success('Card added successfully');
+            onSuccess();
+          } else {
+            message.error('Failed to add card');
+          }
+        }
+      } catch (error) {
+        console.error('Add card error:', error);
+        message.error('Failed to add card');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const cardElementOptions = {
+      style: {
+        base: {
+          fontSize: '16px',
+          color: '#424770',
+          '::placeholder': {
+            color: '#aab7c4',
+          },
+        },
+        invalid: {
+          color: '#9e2146',
+        },
+      },
+      hidePostalCode: true
+    };
+
+    return (
+      <form onSubmit={handleSubmit}>
+        <div style={{ padding: '10px 0' }}>
+          <CardElement options={cardElementOptions} />
+        </div>
+        <div style={{ marginTop: 20, textAlign: 'right' }}>
+          <Button onClick={onCancel} style={{ marginRight: 8 }}>
+            Cancel
+          </Button>
+          <Button type="primary" htmlType="submit" loading={loading} disabled={!stripe}>
+            Add Card
+          </Button>
+        </div>
+      </form>
+    );
+  };
 
   usePlan(setPlans);
 
   return (
     <section id="price-plan">
       <Modal
-        title="Payment"
-        centered
+        title="Add New Card"
         maskClosable={false}
         open={modalOpen}
-        onOk={() => setModalOpen(false)}
         onCancel={() => setModalOpen(false)}
+        footer={null}
+        centered
+        destroyOnClose={true}
       >
-        <Form
-          form={form}
-          layout={'vertical'}
-        >
-          <Form.Item
-            name={'cardNumber'}
-            label={'Card number'}
-          >
-            <input
-              placeholder={'1234 5678 9012 3456'}
-              ref={cardNumberInputRef}
-            ></input>
-
-          </Form.Item>
-          <Form.Item
-            name={'expiryDate'}
-            label={'Expiry Date'}
-          >
-            <input
-              placeholder={'MM/YY'}
-              ref={maskedInputRef}
-            ></input>
-          </Form.Item>
-          <Form.Item
-            name={'cvv'}
-            label={'CVV'}
-          >
-            <input
-              placeholder={'123'}
-              ref={cvvMaskInputRef}
-            ></input>
-          </Form.Item>
-        </Form>
+        <Elements stripe={stripePromise}>
+          <CardInputForm
+            onSuccess={() => {
+              setModalOpen(false)
+            }}
+            onCancel={() => setModalOpen(false)}
+          />
+        </Elements>
       </Modal>
       <div className="container">
         <div className="row">

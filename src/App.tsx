@@ -10,6 +10,7 @@ const Detail = React.lazy(() => import('./pages/Detail/Detail'));
 const List = React.lazy(() => import('./pages/List/List'));
 const BookUploadPage = React.lazy(() => import('./components/BookUploadPage/BookUploadPage'));
 const Email = React.lazy(() => import('./pages/Email/Email'));
+const Payment = React.lazy(() => import('./pages/Payment/Payment'));
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/list" element={<List />}></Route>
             <Route path="/book-upload" element={<BookUploadPage />}></Route>
             <Route path="/email" element={<Email />}></Route>
+            <Route path="/payment" element={<Payment />}></Route>
             <Route path="*" element={<Navigate to="/home" replace />}></Route>
           </Routes>
         </Suspense>

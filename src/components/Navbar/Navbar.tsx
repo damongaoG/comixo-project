@@ -15,23 +15,7 @@ const items: MenuProps['items'] = [
 ];
 
 const Navbar: React.FC = () => {
-  const { isLogin } = useContext(AuthContext)
-  const { setLogin } = useContext(AuthContext)
-
-  useEffect(() => {
-    const verifyLogin = async () => {
-      const response = await reLogin();
-      const result: ResultUserVo = await response.json();
-      if (result.code === 1) {
-        setLogin(true);
-      } else {
-        setLogin(false);
-      }
-      console.log('relogin response:', response);
-    };
-
-    verifyLogin();
-  }, []);
+  const { isLogin, setLogin } = useContext(AuthContext)
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'logout') {

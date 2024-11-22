@@ -11,7 +11,7 @@ const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const { setLogin } = useContext(AuthContext);
+  const { setLogin, setUserId } = useContext(AuthContext);
 
   const validateMessages = {
     required: '${label} is required!',
@@ -55,6 +55,9 @@ const SignInAndSignUp: React.FC = () => {
         const result: ResultUserVo = response.data;
         if (result.code === 1) {
           setLogin(true);
+          if (result.data) {
+            setUserId(result.data.id);
+          }
           const closeButton = document.querySelector('.modal .btn-close');
           if (closeButton) {
             (closeButton as HTMLElement).click();

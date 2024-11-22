@@ -1,6 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { BookVO } from '../../types/books-vo';
+import { ResultBook } from '../../types/result-book';
+import { message } from 'antd';
+import Preloader from '../Preloader/Preloader';
 
 const ComicDetails: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const [book, setBook] = useState<BookVO | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchBookDetail = async () => {
+      const nanoId = searchParams.get('id');
+      if (!nanoId) {
+        setError('Book ID not found');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}/nanoId/${nanoId}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        const result: ResultBook = await response.json();
+        if (result.code !== 1) {
+          message.error(result.error?.message || 'Failed to fetch book details');
+        }
+        setBook(result.data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookDetail();
+  }, [searchParams]);
+
+  if (loading) {
+    return <Preloader />;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <>
       {/* Page Title Section */}
@@ -18,91 +67,19 @@ const ComicDetails: React.FC = () => {
           <div className="row details-pos">
             <div className="col-lg-5 comic-detail-img">
               <img
-                src="/assets/images/comic1.png"
+                src={book?.imageURL || "/assets/images/comic1.png"}
                 alt="comic-img"
                 className="img-fluid"
               />
             </div>
             <div className="col-lg-6 comic-detail-txt">
-              {/*<div className="stars">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star-half-stroke"></i>
-                <span>4.5</span>
-              </div>*/}
-              <h3>Shadow Fighter V: Comic Book.</h3>
+              <h4>{book?.title || "Loading..."}</h4>
               <span>Storyline</span>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore earum
-                perferendis veritatis totam cupiditate excepturi delectus, ullam iste.
-                Accusantium nobis, repellendus alias fugit excepturi iure!
-              </p>
-              {/*<h4>$236.24</h4>*/}
-              {/*<a href="cart.html" className="button-primary">Add To Cart</a>*/}
-              {/*<a href="bookmark.html" className="bookmark-btn">*/}
-              {/*  <i className="fa-solid fa-bookmark"></i>*/}
-              {/*</a>*/}
+              <p>{book?.description || "No description available"}</p>
+              <a href="cart.html" className="button-primary">Download</a>
             </div>
           </div>
         </div>
-
-        {/* Marquee Section */}
-        {/*<div className="marquee">
-                    <span className="marquee-1">
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                    </span>
-          <span className="marquee-2">
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Book
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                        <span className="text">
-                            Comic Arts
-                            <img src="images/star.png" alt="star" />
-                        </span>
-                    </span>
-        </div>*/}
       </section>
     </>
   );

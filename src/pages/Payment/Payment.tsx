@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, Button, Modal, Row, Col, message, Result, Radio, Space } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import CopyRightSection from "../../components/CopyRightSection/CopyRightSection";
@@ -10,22 +10,133 @@ import SignInAndSignUp from "../../components/SignInAndSignUp/SignInAndSignUp";
 import { AuthContext } from "../../AuthContext";
 import Preloader from "../../components/Preloader/Preloader";
 import { CardVO } from "../../types/card-vo";
-import { ResultCardVO } from "../../types/result-card";
+import { CardElement, Elements, useElements, useStripe } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+// Initialize Stripe
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
 
 // get bank icon
 const getCardIcon = (brand: string) => {
     const brandLower = brand.toLowerCase();
-    return <img src={`/images/card-brands/${brandLower}.png`} alt={brand} style={{ height: 30 }} />;
+    return <img src={`assets/images/card-brands/${brandLower}.svg`} alt={brand} style={{ height: 30 }} />;
+};
+
+const CardInputForm = ({ userId, onSuccess, onCancel }: {
+    userId: string;
+    onSuccess: () => void;
+    onCancel: () => void;
+}) => {
+    const stripe = useStripe();
+    const elements = useElements();
+    const [loading, setLoading] = useState(false);
+
+    const createStripeToken = async () => {
+        if (!stripe || !elements) {
+            throw new Error('Stripe not initialized');
+        }
+
+        const { error, token } = await stripe.createToken(
+            elements.getElement(CardElement)!
+        );
+
+        if (error) {
+            throw new Error(error.message);
+        }
+
+        return token;
+    };
+
+    const sendTokenToBackend = async (tokenId: string) => {
+        const response = await fetch(process.env.REACT_APP_CARD_URL!, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: userId,
+                token: tokenId,
+            }),
+        });
+
+        const result = await response.json();
+
+        if (result.code !== 1) {
+            throw new Error(result.message || 'Failed to add card');
+        }
+
+        return result;
+    };
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+
+        setLoading(true);
+
+        try {
+            const token = await createStripeToken();
+
+            if (token) {
+                await sendTokenToBackend(token.id);
+                message.success('Card added successfully');
+                onSuccess();
+            }
+        } catch (error) {
+            console.error('Add card error:', error);
+            message.error(error instanceof Error ? error.message : 'Failed to add card');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const cardElementOptions = {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+            },
+            invalid: {
+                color: '#9e2146',
+            },
+        },
+        hidePostalCode: true
+    };
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <div style={{ padding: '10px 0' }}>
+                <CardElement options={cardElementOptions} />
+            </div>
+            <div style={{ marginTop: 20, textAlign: 'right' }}>
+                <Button onClick={onCancel} style={{ marginRight: 8 }}>
+                    Cancel
+                </Button>
+                <Button
+                    type="primary"
+                    htmlType="submit"
+                    loading={loading}
+                    disabled={!stripe}>
+                    Add Card
+                </Button>
+            </div>
+        </form>
+    );
 };
 
 const Payment: React.FC = () => {
-    const { isLogin, isLoading } = useContext(AuthContext);
+    const { isLogin, isLoading, userId } = useContext(AuthContext);
     const navigate = useNavigate();
     const [cards, setCards] = useState<CardVO[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const [selectedCardId, setSelectedCardId] = useState<string>('');
     const [showSuccess, setShowSuccess] = useState(false);
+    const [searchParams] = useSearchParams();
+    const planId = searchParams.get('planId');
 
     const fetchCards = async () => {
         try {
@@ -36,9 +147,10 @@ const Payment: React.FC = () => {
                     'Accept': 'application/json'
                 }
             });
-            const result: ResultCardVO = await response.json();
+            const result = await response.json();
             if (result.code === 1) {
-                setCards(result.data);
+                const parsedCards = result.data.map((cardString: string) => JSON.parse(cardString));
+                setCards(parsedCards);
             } else {
                 message.error(result.error?.message || 'Failed to fetch cards');
             }
@@ -52,10 +164,13 @@ const Payment: React.FC = () => {
     useEffect(() => {
         if (!isLoading && !isLogin) {
             navigate('/');
+        } else if (!planId) {
+            message.error('Invalid plan selected');
+            navigate('/');
         } else if (isLogin) {
             fetchCards();
         }
-    }, [isLogin, isLoading, navigate]);
+    }, [isLogin, isLoading, navigate, planId]);
 
     const handleAddCard = async () => {
         setIsModalVisible(false);
@@ -65,14 +180,16 @@ const Payment: React.FC = () => {
     const handleConfirmPayment = async () => {
         try {
             setLoading(true);
-            const response = await fetch('/api/payment', {
+            const response = await fetch(process.env.REACT_APP_PLAN_ORDER_URL as string, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    cardId: selectedCardId,
-                    // 添加其他需要的支付参数
+                    paymentMethodId: selectedCardId,
+                    planId: planId,
+                    userId: userId
                 })
             });
 
@@ -158,7 +275,9 @@ const Payment: React.FC = () => {
                                         style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                                         onClick={() => setIsModalVisible(true)}
                                     >
-                                        <Button type="dashed" icon={<PlusOutlined />}>
+                                        <Button type="dashed" icon={<PlusOutlined />}
+                                            onClick={() => setIsModalVisible(true)}
+                                        >
                                             Add New Card
                                         </Button>
                                     </Card>
@@ -166,19 +285,6 @@ const Payment: React.FC = () => {
                             )}
                         </Row>
                     </Radio.Group>
-
-                    {cards.length === 0 && (
-                        <div style={{ textAlign: 'center', marginTop: 20 }}>
-                            <p>No payment methods found.</p>
-                            <Button
-                                type="primary"
-                                icon={<PlusOutlined />}
-                                onClick={() => setIsModalVisible(true)}
-                            >
-                                Add Payment Method
-                            </Button>
-                        </div>
-                    )}
 
                     <div style={{ marginTop: 24, textAlign: 'right' }}>
                         <Space>
@@ -198,12 +304,24 @@ const Payment: React.FC = () => {
             </section>
 
             <Modal
-                title="Add Payment Method"
+                title="Add New Card"
+                maskClosable={false}
                 open={isModalVisible}
-                onOk={handleAddCard}
                 onCancel={() => setIsModalVisible(false)}
+                footer={null}
+                centered
+                destroyOnClose={true}
             >
-                {/* 这里留空，等待后续添加表单内容 */}
+                <Elements stripe={stripePromise}>
+                    <CardInputForm
+                        userId={userId || ''}
+                        onSuccess={() => {
+                            setIsModalVisible(false);
+                            fetchCards();
+                        }}
+                        onCancel={() => setIsModalVisible(false)}
+                    />
+                </Elements>
             </Modal>
 
             <Footer />

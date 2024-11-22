@@ -14,7 +14,7 @@ const PricePlanSection: React.FC = () => {
 
   const handleChoosePlan = (e: React.MouseEvent, plan: Plan) => {
     e.preventDefault();
-    
+
     if (!isLogin) {
       // If user is not logged in, show the login modal
       const modal = document.getElementById('contact-modal');
@@ -53,7 +53,7 @@ const PricePlanSection: React.FC = () => {
                       <span>{plan.metadata.title}</span>
                       <p>Per {plan.interval}</p>
                       <img src={`/assets/images/price${index + 1}.png`} alt="price-icon" />
-                      <h3>${plan.amount}</h3>
+                      <h3>AU${plan.amount / 100}</h3>
                       {plan.metadata.description?.split(',').map((feature, idx) => (
                         <p key={idx}>
                           <i className="fa-solid fa-check"></i> {feature.trim()}

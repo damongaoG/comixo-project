@@ -1,33 +1,86 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Row, Col, Pagination, Spin } from "antd";
+import { useNavigate } from "react-router-dom";
 import { BookVO } from "../../types/books-vo";
 import { CONSTANTS } from "../../constants";
+import { AuthContext } from "../../AuthContext";
 
 const Bookmark: React.FC = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState<BookVO[]>([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = CONSTANTS.PAGE_SIZE;
+  const { isLogin, userId, isLoading, setLogin, setUserId } = useContext(AuthContext);
 
   const fetchBooks = async (page: number) => {
+    if (isLoading) {
+      return;
+    }
+
     setLoading(true);
     try {
       const data = {
         page: page - 1,
         pageSize: pageSize
       }
+      console.log('is login', isLogin);
       const base64Data = btoa(JSON.stringify(data));
-      const response = await fetch(`${process.env.REACT_APP_BOOK_URL}?list=${base64Data}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+
+      // first use auth url
+      if (isLogin) {
+        try {
+          const authResponse = await fetch(`${process.env.REACT_APP_AUTH_BOOK_URL}?list=${base64Data}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+
+          // if return 401, then use anonymous url and set login state to false
+          if (authResponse.status === 401) {
+            console.log('Auth failed, trying anonymous endpoint');
+            // Set login state to false and clear userId
+            setLogin(false);
+            setUserId(null);
+            
+            const anonResponse = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}?list=${base64Data}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+            const result = await anonResponse.json();
+            if (result.code === 1) {
+              setBooks(result.data.content);
+              setTotal(result.data.totalElements);
+            }
+            return;
+          }
+
+          const result = await authResponse.json();
+          if (result.code === 1) {
+            setBooks(result.data.content);
+            setTotal(result.data.totalElements);
+          }
+        } catch (error) {
+          console.error("Error fetching authenticated books:", error);
+          throw error;
         }
-      })
-      const result = await response.json();
-      if (result.code === 1) {
-        setBooks(result.data.content);
-        setTotal(result.data.totalElements);
+      } else {
+        // if not login, then use anonymous url
+        const response = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}?list=${base64Data}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        const result = await response.json();
+        if (result.code === 1) {
+          setBooks(result.data.content);
+          setTotal(result.data.totalElements);
+        }
       }
     } catch (error) {
       console.error("Error fetching books:", error);
@@ -37,11 +90,18 @@ const Bookmark: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchBooks(currentPage);
-  }, [currentPage]);
+    if (!isLoading) {
+      console.log('Auth state loaded:', { isLogin, userId });
+      fetchBooks(currentPage);
+    }
+  }, [currentPage, isLogin, isLoading]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleBookClick = (bookId: string) => {
+    navigate(`/detail?id=${bookId}`);
   };
 
   return (
@@ -73,10 +133,14 @@ const Bookmark: React.FC = () => {
           <Spin spinning={loading}>
             <Row gutter={[24, 24]}>
               {books.map((book) => (
-                <Col key={book.id} xs={24} sm={12} md={8} lg={6}>
-                  <div className="bookmark-item text-center">
+                <Col key={book.nanoId} xs={24} sm={12} md={8} lg={6}>
+                  <div
+                    className="bookmark-item text-center"
+                    onClick={() => handleBookClick(book.nanoId)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <img
-                      src={book.imageUrl || "/assets/images/comic1.png"}
+                      src={book.imageURL || "/assets/images/comic1.png"}
                       alt={book.title}
                       className="img-fluid"
                     />

@@ -4,5 +4,5 @@ export interface BookVO {
     downloadURL?: string;
     nanoId: string;
     description?: string;
-    imageUrl?: string;
+    imageURL?: string;
 }

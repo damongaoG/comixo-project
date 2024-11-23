@@ -22,7 +22,9 @@ const Home: React.FC = () => {
       <Brand/>
       <NewComics/>
       <PopularSection/>
-      <PricePlanSection/>
+      <div id="price-plan-section">
+        <PricePlanSection/>
+      </div>
       <Footer/>
       <CopyRightSection/>
     </div>

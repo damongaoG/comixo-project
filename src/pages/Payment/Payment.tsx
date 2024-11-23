@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Card, Button, Modal, Row, Col, message, Result, Radio, Space } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Card, Button, Modal, Row, Col, message, Result, Radio, Space, Popconfirm } from "antd";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import CopyRightSection from "../../components/CopyRightSection/CopyRightSection";
 import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/Navbar/Navbar";
@@ -149,8 +149,7 @@ const Payment: React.FC = () => {
             });
             const result = await response.json();
             if (result.code === 1) {
-                const parsedCards = result.data.map((cardString: string) => JSON.parse(cardString));
-                setCards(parsedCards);
+                setCards(result.data);
             } else {
                 message.error(result.error?.message || 'Failed to fetch cards');
             }
@@ -201,6 +200,39 @@ const Payment: React.FC = () => {
             }
         } catch (error) {
             message.error('Payment failed');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteCard = async (cardId: string) => {
+        try {
+            setLoading(true);
+            const response = await fetch(`${process.env.REACT_APP_CARD_URL}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: userId,
+                    cardId: cardId
+                })
+            });
+
+            const result = await response.json();
+            if (result.code === 1) {
+                message.success('Card deleted successfully');
+                if (selectedCardId === cardId) {
+                    setSelectedCardId('');
+                }
+                await fetchCards();
+            } else {
+                message.error(result.message || 'Failed to delete card');
+            }
+        } catch (error) {
+            console.error('Delete card error:', error);
+            message.error('Failed to delete card');
         } finally {
             setLoading(false);
         }
@@ -258,7 +290,31 @@ const Payment: React.FC = () => {
                             {cards.map((card) => (
                                 <Col key={card.id} xs={24} sm={12} md={8} lg={6}>
                                     <Radio value={card.id}>
-                                        <Card>
+                                        <Card style={{ position: 'relative' }}>
+                                            <Popconfirm
+                                                title="Delete card"
+                                                description="Are you sure you want to delete this card?"
+                                                onConfirm={(e) => {
+                                                    e?.stopPropagation();
+                                                    handleDeleteCard(card.id);
+                                                }}
+                                                onCancel={(e) => e?.stopPropagation()}
+                                                okText="Yes"
+                                                cancelText="No"
+                                            >
+                                                <DeleteOutlined
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: '12px',
+                                                        right: '12px',
+                                                        fontSize: '16px',
+                                                        color: '#ff4d4f',
+                                                        cursor: 'pointer',
+                                                        zIndex: 1
+                                                    }}
+                                                />
+                                            </Popconfirm>
                                             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
                                                 {getCardIcon(card.card.brand)}
                                             </div>

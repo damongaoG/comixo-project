@@ -11,6 +11,7 @@ import Footer from '../../components/Footer/Footer';
 import ProfileContent from '../../components/ProfileContent/ProfileContent';
 import SubscriptionsContent from '../../components/SubscriptionsContent/SubscriptionsContent';
 import ChangePasswordContent from '../../components/ChangePasswordContent/ChangePasswordContent';
+import OffcanvasMenu from '../../components/OffcanvasMenu/OffcanvasMenu';
 
 const { Content, Sider } = Layout;
 
@@ -51,6 +52,7 @@ const UserProfile: React.FC = () => {
     return (
         <>
             <Navbar />
+            <OffcanvasMenu />
             <section id="page-title">
                 <div id="backtotop">
                     <a href="#page-title" id="backtotop-value">

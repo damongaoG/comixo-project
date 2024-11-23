@@ -76,7 +76,8 @@ const ComicDetails: React.FC = () => {
               <h4>{book?.title || "Loading..."}</h4>
               <span>Storyline</span>
               <p>{book?.description || "No description available"}</p>
-              <a href="cart.html" className="button-primary">Download</a>
+              <button className="button-primary" style={{ marginTop: '10px', border: 'none' }}>Download</button>
+              {/* <a href="cart.html" className="button-primary">Download</a> */}
             </div>
           </div>
         </div>

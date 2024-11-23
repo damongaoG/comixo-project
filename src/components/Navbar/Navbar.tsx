@@ -1,13 +1,17 @@
 import React, { useContext, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ResultUserVo } from '../../types/result-user-vo';
 import { Dropdown, MenuProps, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import {reLogin, userLogOut} from './api';
+import { reLogin, userLogOut } from './api';
 import { Result } from '../../types/result';
 import { AuthContext } from '../../AuthContext';
 
 const items: MenuProps['items'] = [
+  {
+    label: 'Profile',
+    key: 'profile',
+  },
   {
     label: 'Log Out',
     key: 'logout',
@@ -15,6 +19,7 @@ const items: MenuProps['items'] = [
 ];
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
   const { isLogin, setLogin } = useContext(AuthContext)
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
@@ -27,7 +32,10 @@ const Navbar: React.FC = () => {
       } else {
         message.error('Log out failed');
       }
+    } else if (e.key === 'profile') {
+      navigate('/profile');
     }
+
   };
 
   const menuProps = {

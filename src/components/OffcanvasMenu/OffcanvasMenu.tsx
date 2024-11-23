@@ -1,7 +1,94 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React, { useEffect, useState, useContext } from 'react';
+import { Link } from "react-router-dom";
+import { Spin } from 'antd';
+import { BookVO } from "../../types/books-vo";
+import { CONSTANTS } from "../../constants";
+import { AuthContext } from "../../AuthContext";
 
 const OffcanvasMenu: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [books, setBooks] = useState<BookVO[]>([]);
+  const { isLogin, isLoading, setLogin, setUserId } = useContext(AuthContext);
+
+  const fetchBooks = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = {
+        dataFields: [
+          {
+            name: 'createTime',
+            value: 1,
+            operator: 'sort'
+          }
+        ],
+        page: 0,
+        pageSize: 4  // Only fetch 4 books
+      }
+      const base64Data = btoa(JSON.stringify(data));
+
+      if (isLogin) {
+        try {
+          const authResponse = await fetch(`${process.env.REACT_APP_AUTH_BOOK_URL}?list=${base64Data}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          });
+
+          if (authResponse.status === 401) {
+            setLogin(false);
+            setUserId(null);
+
+            const anonResponse = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}?list=${base64Data}`, {
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              }
+            });
+            const result = await anonResponse.json();
+            if (result.code === 1) {
+              setBooks(result.data.content);
+            }
+            return;
+          }
+
+          const result = await authResponse.json();
+          if (result.code === 1) {
+            setBooks(result.data.content);
+          }
+        } catch (error) {
+          console.error("Error fetching authenticated books:", error);
+          throw error;
+        }
+      } else {
+        const response = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}?list=${base64Data}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        const result = await response.json();
+        if (result.code === 1) {
+          setBooks(result.data.content);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!isLoading) {
+      fetchBooks();
+    }
+  }, [isLoading]);
+
   return (
     <div
       className="offcanvas offcanvas-end"
@@ -31,66 +118,28 @@ const OffcanvasMenu: React.FC = () => {
             <i className="fa-solid fa-magnifying-glass"></i>
           </button>
         </form>
-        <div className="row">
-          <div className="col-lg-6 menu-comic">
-            <Link to="/detail">
-              <img
-                src="/assets/images/comic1.png"
-                alt="comic"
-                className="img-fluid"
-              />
-            </Link>
+        <Spin spinning={loading}>
+          <div className="row">
+            {books.map((book) => (
+              <div key={book.nanoId} className="col-lg-6 menu-comic">
+                <Link to={`/detail?id=${book.nanoId}`}>
+                  <img
+                    src={book.imageURL || "/assets/images/comic1.png"}
+                    alt={book.title}
+                    className="img-fluid"
+                  />
+                </Link>
+              </div>
+            ))}
           </div>
-          <div className="col-lg-6 menu-comic">
-            <Link to="/detail">
-              <img
-                src="/assets/images/popular1.png"
-                alt="comic"
-                className="img-fluid"
-              />
-            </Link>
-          </div>
-          <div className="col-lg-6 menu-comic">
-            <Link to="/detail">
-              <img
-                src="/assets/images/popular2.png"
-                alt="comic"
-                className="img-fluid"
-              />
-            </Link>
-          </div>
-          <div className="col-lg-6 menu-comic">
-            <Link to="/detail">
-              <img
-                src="/assets/images/comic3.png"
-                alt="comic"
-                className="img-fluid"
-              />
-            </Link>
-          </div>
-        </div>
+        </Spin>
         <div className="row pt-5">
           <div className="col-lg-12 text-center">
-            <a href="/list" className="button-primary">
+            <Link to="/list" className="button-primary">
               Browse All
-            </a>
+            </Link>
           </div>
         </div>
-        {/*<div className="social-media mobile-v-hide text-center">
-          <p>Follow Us</p>
-          <a href="#">
-            <i className="fa-brands fa-facebook-f"></i>
-          </a>
-          <a href="#">
-            <i className="fa-brands fa-twitter"></i>
-          </a>
-          <a href="#">
-            <i className="fa-brands fa-twitch"></i>
-          </a>
-          <a href="#">
-            <i className="fa-brands fa-youtube"></i>
-          </a>
-        </div>*/}
       </div>
     </div>
   );

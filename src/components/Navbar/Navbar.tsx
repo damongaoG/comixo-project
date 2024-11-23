@@ -49,17 +49,35 @@ const Navbar: React.FC = () => {
         <Link className="navbar-brand" to="/">
           Comixo<span>.</span>
         </Link>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+
+        <div className="d-flex d-lg-none align-items-center">
+          {isLogin ? (
+            <Dropdown menu={menuProps}>
+              <a className="button-secondary me-2">
+                <UserOutlined />
+              </a>
+            </Dropdown>
+          ) : (
+            <a data-bs-toggle="modal"
+              data-bs-target="#contact-modal"
+              href="#"
+              className="button-secondary me-2">
+              Login
+            </a>
+          )}
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav m-auto mb-2 mt-0 mb-lg-0">
             <li className="nav-item">
@@ -125,7 +143,7 @@ const Navbar: React.FC = () => {
               <a data-bs-toggle="modal"
                 data-bs-target="#contact-modal"
                 href="#" className="button-secondary">
-                Free Comics
+                Login
               </a>
             )}
             <a

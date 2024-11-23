@@ -30,8 +30,8 @@ const OffcanvasMenu: React.FC = () => {
             value: 1,
             operator: 'sort'
           }],
-        page: 0,
-        pageSize: 10
+        page: CONSTANTS.PAGE,
+        pageSize: CONSTANTS.PAGE_SIZE
       }
       const base64Data = btoa(JSON.stringify(data));
 
@@ -134,22 +134,22 @@ const OffcanvasMenu: React.FC = () => {
           <div className="row">
             {books.map((book) => (
               <div key={book.nanoId} className="col-lg-6 menu-comic">
-                <Link to={`/detail?id=${book.nanoId}`}>
+                <a href={`/detail?id=${book.nanoId}`}>
                   <img
                     src={book.imageURL || "/assets/images/comic1.png"}
                     alt={book.title}
                     className="img-fluid"
                   />
-                </Link>
+                </a>
               </div>
             ))}
           </div>
         </Spin>
         <div className="row pt-5">
           <div className="col-lg-12 text-center">
-            <Link to="/list" className="button-primary">
+            <a href="/list" className="button-primary">
               Browse All
-            </Link>
+            </a>
           </div>
         </div>
       </div>

@@ -95,6 +95,11 @@ const Navbar: React.FC = () => {
                 Comics
               </a>
             </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/book-upload">
+                Upload
+              </a>
+            </li>
             {/* <li className="nav-item">
               <a className="nav-link" href="#blog">
                 Blog

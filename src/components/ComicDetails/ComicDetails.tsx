@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { BookVO } from '../../types/books-vo';
 import { ResultBook } from '../../types/result-book';
 import { message, Modal, Progress } from 'antd';
@@ -16,6 +16,7 @@ const ComicDetails: React.FC = () => {
   const [downloadStarted, setDownloadStarted] = useState(false);
   const { isLogin } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchBookDetail = async () => {
@@ -128,11 +129,9 @@ const ComicDetails: React.FC = () => {
       const result: ResultBook = await response.json();
 
       if (result.code === 1 && result.data.downloadURL) {
-        // Start actual download with progress tracking
-        await downloadFile(
-          result.data.downloadURL, 
-          `${book?.title || 'comic'}.pdf`
-        );
+        window.open(result.data.downloadURL, '_blank');
+        setShowDownloadModal(false);
+        message.success('Download started in a new tab!');
       } else {
         Modal.confirm({
           title: 'Subscription Required',
@@ -140,8 +139,7 @@ const ComicDetails: React.FC = () => {
           okText: 'View Plans',
           cancelText: 'Cancel',
           onOk() {
-            navigate('/#price-plan-section');
-            window.location.reload();
+            navigate('/', { state: { scrollTo: 'price-plan-section' } });
           }
         });
       }

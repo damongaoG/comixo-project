@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Banner from "../../components/Banner/Banner";
 import Navbar from "../../components/Navbar/Navbar";
 import OffcanvasMenu from "../../components/OffcanvasMenu/OffcanvasMenu";
@@ -12,6 +13,28 @@ import Footer from "../../components/Footer/Footer";
 import CopyRightSection from "../../components/CopyRightSection/CopyRightSection";
 
 const Home: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && (location.state as any).scrollTo === 'price-plan-section') {
+      setTimeout(() => {
+        const element = document.getElementById('price-plan-section');
+        if (element) {
+          const headerOffset = 100;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          
+          window.history.replaceState({}, document.title);
+        }
+      }, 100);
+    }
+  }, [location]);
+
   return (
     <div>
       <Navbar/>

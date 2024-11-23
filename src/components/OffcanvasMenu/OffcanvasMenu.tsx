@@ -8,9 +8,10 @@ import { AuthContext } from "../../AuthContext";
 const OffcanvasMenu: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [books, setBooks] = useState<BookVO[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const { isLogin, isLoading, setLogin, setUserId } = useContext(AuthContext);
 
-  const fetchBooks = async () => {
+  const fetchBooks = async (search?: string) => {
     if (isLoading) {
       return;
     }
@@ -18,15 +19,19 @@ const OffcanvasMenu: React.FC = () => {
     setLoading(true);
     try {
       const data = {
-        dataFields: [
-          {
+        dataFields: search
+          ? [{
+            name: 'title',
+            value: search,
+            operator: 'like'
+          }]
+          : [{
             name: 'createTime',
             value: 1,
             operator: 'sort'
-          }
-        ],
+          }],
         page: 0,
-        pageSize: 4  // Only fetch 4 books
+        pageSize: 10
       }
       const base64Data = btoa(JSON.stringify(data));
 
@@ -89,6 +94,11 @@ const OffcanvasMenu: React.FC = () => {
     }
   }, [isLoading]);
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchBooks(searchTerm);
+  };
+
   return (
     <div
       className="offcanvas offcanvas-end"
@@ -108,11 +118,13 @@ const OffcanvasMenu: React.FC = () => {
         ></button>
       </div>
       <div className="offcanvas-body side-menu">
-        <form>
+        <form onSubmit={handleSearch}>
           <input
             type="text"
             className="form-control"
             placeholder="Search by Comic Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button type="submit">
             <i className="fa-solid fa-magnifying-glass"></i>

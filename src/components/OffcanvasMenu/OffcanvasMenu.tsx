@@ -136,6 +136,7 @@ const OffcanvasMenu: React.FC = () => {
               <div key={book.nanoId} className="col-lg-6 menu-comic">
                 <a href={`/detail?id=${book.nanoId}`}>
                   <img
+                    style={{ width: '152px', height: '190px', objectFit: 'contain', background: 'black' }}
                     src={book.imageURL || "/assets/images/comic1.png"}
                     alt={book.title}
                     className="img-fluid"

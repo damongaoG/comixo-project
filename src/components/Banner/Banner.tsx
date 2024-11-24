@@ -29,14 +29,14 @@ const Banner: React.FC = () => {
             <h3>Comic</h3>
             <h3 className="txt-pos">Book.</h3>
             <a href="#" className="button-primary">Read Now</a>
-            <a
+            {/* <a
               className="venobox button-circular"
               data-autoplay="true"
               data-vbtype="video"
               href="https://www.youtube.com/watch?v=kmh1cr3b4Js"
             >
               <i className="fa-solid fa-play"></i>
-            </a>
+            </a> */}
             <div className="row banner-review">
               <div className="col-lg-3">
                 <img src="/assets/images/user5.png" alt="user" className="one" />

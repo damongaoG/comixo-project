@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import Banner from "../../components/Banner/Banner";
 import Navbar from "../../components/Navbar/Navbar";
@@ -11,9 +11,61 @@ import PopularSection from "../../components/PopularSection/PopularSection";
 import PricePlanSection from "../../components/PricePlanSection/PricePlanSection";
 import Footer from "../../components/Footer/Footer";
 import CopyRightSection from "../../components/CopyRightSection/CopyRightSection";
+import { OperatorVo } from "../../types/operator-vo";
+import { ResultPageOperator } from "../../types/result-page-operator";
 
 const Home: React.FC = () => {
   const location = useLocation();
+  const [brandData, setBrandData] = useState<OperatorVo[]>([]);
+  const [bannerData, setBannerData] = useState<OperatorVo[]>([]);
+  const [newComicsData, setNewComicsData] = useState<OperatorVo[]>([]);
+  const [popularData, setPopularData] = useState<OperatorVo[]>([]);
+
+  useEffect(() => {
+    const fetchOperators = async () => {
+      try {
+        const params = {
+          page: 0,
+          pageSize: 50
+        }
+        const response = await fetch(`${process.env.REACT_APP_OPERATOR_URL}?list=${btoa(JSON.stringify(params))}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        const data: ResultPageOperator = await response.json();
+
+        // Distribute data based on componentIndex
+        const banner: OperatorVo[] = [];
+        const newComics: OperatorVo[] = [];
+        const popular: OperatorVo[] = [];
+        const brand: OperatorVo[] = [];
+
+        data.data.content.forEach(operator => {
+          if (operator.componentIndex === 1) {
+            brand.push(operator);
+          } else if (operator.componentIndex === 2) {
+            newComics.push(operator);
+          } else if (operator.componentIndex === 3) {
+            popular.push(operator);
+          } else if (operator.componentIndex === 0) {
+            banner.push(operator);
+          }
+        });
+
+        setBannerData(banner);
+        setNewComicsData(newComics);
+        setPopularData(popular);
+        setBrandData(brand);
+      } catch (error) {
+        console.error('Error fetching operators:', error);
+      }
+    };
+
+    fetchOperators();
+  }, []);
 
   useEffect(() => {
     if (location.state && (location.state as any).scrollTo === 'price-plan-section') {
@@ -28,7 +80,7 @@ const Home: React.FC = () => {
             top: offsetPosition,
             behavior: 'smooth'
           });
-          
+
           window.history.replaceState({}, document.title);
         }
       }, 100);
@@ -37,19 +89,19 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      <Navbar/>
-      <SignInAndSignUp/>
-      <OffcanvasMenu/>
-      <Banner/>
-      <About/>
-      <Brand/>
-      <NewComics/>
-      <PopularSection/>
+      <Navbar />
+      <SignInAndSignUp />
+      <OffcanvasMenu />
+      <Banner operators={bannerData} />
+      <About />
+      <Brand operators={brandData} />
+      <NewComics operators={newComicsData} />
+      <PopularSection operators={popularData} />
       <div id="price-plan-section">
-        <PricePlanSection/>
+        <PricePlanSection />
       </div>
-      <Footer/>
-      <CopyRightSection/>
+      <Footer />
+      <CopyRightSection />
     </div>
   )
 };

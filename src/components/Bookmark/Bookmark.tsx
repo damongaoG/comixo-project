@@ -44,7 +44,7 @@ const Bookmark: React.FC = () => {
             // Set login state to false and clear userId
             setLogin(false);
             setUserId(null);
-            
+
             const anonResponse = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}?list=${base64Data}`, {
               headers: {
                 'Content-Type': 'application/json',
@@ -142,9 +142,10 @@ const Bookmark: React.FC = () => {
                     <img
                       src={book.imageURL || "/assets/images/comic1.png"}
                       alt={book.title}
+                      style={{ width: '306px', height: '383px', objectFit: 'contain', background: 'black' }}
                       className="img-fluid"
                     />
-                    <h3>{book.title}</h3>
+                    <h3>{book.title.length > 50 ? `${book.title.substring(0, 50)}...` : book.title}</h3>
                   </div>
                 </Col>
               ))}

@@ -1,8 +1,13 @@
 import React, { useEffect } from 'react';
+import { OperatorVo } from '../../types/operator-vo';
 
 declare const $: any;
 
-const Banner: React.FC = () => {
+interface BannerProps {
+  operators: OperatorVo[];
+}
+
+const Banner: React.FC<BannerProps> = ({ operators }) => {
   useEffect(() => {
     if ($('.venobox').venobox) {
       $('.venobox').venobox({
@@ -29,16 +34,22 @@ const Banner: React.FC = () => {
             <h3>Comic</h3>
             <h3 className="txt-pos">Book.</h3>
             <a href="#" className="button-primary">Read Now</a>
-            {/* <a
-              className="venobox button-circular"
-              data-autoplay="true"
-              data-vbtype="video"
-              href="https://www.youtube.com/watch?v=kmh1cr3b4Js"
-            >
-              <i className="fa-solid fa-play"></i>
-            </a> */}
-            <div className="row banner-review">
-              <div className="col-lg-3">
+          </div>
+          <div className="col-10 col-sm-11 col-md-7 col-lg-6 banner-images">
+            <img src="/assets/images/banner-icon.png" alt="banner-icon" className="banner-icon" />
+            {operators.map((operator, index) => (
+              <img
+                key={operator.id}
+                src={operator.imageURL}
+                alt={operator.title}
+                style={{ width: '524px', height: '644px', objectFit: 'contain', background: 'black' }}
+                className={`banner-img ${index === 0 ? 'one' : 'two'} img-fluid`}
+              />
+            ))}
+          </div>
+
+          <div className="row banner-review">
+             {/*  <div className="col-lg-3">
                 <img src="/assets/images/user5.png" alt="user" className="one" />
                 <img src="/assets/images/user1.png" alt="user" />
                 <img src="/assets/images/user2.png" alt="user" />
@@ -52,17 +63,11 @@ const Banner: React.FC = () => {
                   <i className="fa-solid fa-star-half-stroke"></i>
                 </div>
                 <p>(409.6K Reviews)</p>
-              </div>
+              </div> */}
             </div>
-          </div>
-          <div className="col-10 col-sm-11 col-md-7 col-lg-6 banner-images">
-            <img src="/assets/images/banner-icon.png" alt="banner-icon" className="banner-icon" />
-            <img src="/assets/images/banner2.png" alt="banner-img" className="banner-img one img-fluid" />
-            <img src="/assets/images/banner1.png" alt="banner-img" className="banner-img two img-fluid" />
-          </div>
         </div>
       </div>
-     {/* <div className="marquee">
+      {/* <div className="marquee">
         <span className="marquee-1">
           <span className="text">Comic Book<img src="/assets/images/star.png" alt="star" /></span>
           <span className="text">Comic Arts<img src="/assets/images/star.png" alt="star" /></span>

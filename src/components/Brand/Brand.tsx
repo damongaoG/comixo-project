@@ -1,8 +1,13 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
+import { OperatorVo } from "../../types/operator-vo";
 
 declare const $: any;
 
-const Brand: React.FC = () => {
+interface BrandProps {
+  operators: OperatorVo[];
+}
+
+const Brand: React.FC<BrandProps> = ({ operators }) => {
   useEffect(() => {
     const initSlick = () => {
       const $brandMain = $('.brand-main');
@@ -53,26 +58,26 @@ const Brand: React.FC = () => {
         $brandMain.slick('unslick');
       }
     }
-  }, []);
+  }, [operators]);
+
+  const sortedOperators = [...operators].sort((a, b) =>
+    (a.widgetIndex || 0) - (b.widgetIndex || 0)
+  );
+
   return (
     <section id="brand">
       <div className="container">
         <div className="brand-main">
-          <div className="col-lg-3">
-            <img src='/assets/images/brand1.png' alt="brand-img" className="img-fluid"/>
-          </div>
-          <div className="col-lg-3">
-            <img src='/assets/images/brand2.png' alt="brand-img" className="img-fluid"/>
-          </div>
-          <div className="col-lg-3">
-            <img src='/assets/images/brand3.png' alt="brand-img" className="img-fluid"/>
-          </div>
-          <div className="col-lg-3">
-            <img src='/assets/images/brand1.png' alt="brand-img" className="img-fluid"/>
-          </div>
-          <div className="col-lg-3">
-            <img src='/assets/images/brand2.png' alt="brand-img" className="img-fluid"/>
-          </div>
+          {sortedOperators.map((operator) => (
+            <div key={operator.id} className="col-lg-3">
+              <img
+                src={operator.imageURL}
+                alt={operator.title}
+                style={{ width: '324px', height: '165px', objectFit: 'contain', background: 'black' }}
+                className="img-fluid"
+              />
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -1,7 +1,17 @@
 import React from 'react';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import { OperatorVo } from '../../types/operator-vo';
 
-const PopularSection: React.FC = () => {
+interface PopularSectionProps {
+  operators: OperatorVo[];
+}
+
+const PopularSection: React.FC<PopularSectionProps> = ({ operators }) => {
+  // Sort operators by widgetIndex
+  const sortedOperators = [...operators].sort((a, b) => 
+    (a.widgetIndex ?? 0) - (b.widgetIndex ?? 0)
+  );
+
   return (
     <section id="popular">
       <div className="container">
@@ -9,45 +19,22 @@ const PopularSection: React.FC = () => {
           <div className="col-lg-6 section-title">
             <span>Popular</span>
             <h3>Explore Our Creativity.</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae blanditi.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
             <Link to="/list" className="button-primary">Browse All</Link>
           </div>
-          <div className="col-lg-6 col-md-9 mobile-m-auto">
-            <div className="popular-item">
-              <p>2024</p>
-              <div className="col-lg-10 ms-auto">
-                <img src="/assets/images/popular1.png" alt="comic-book" className="img-fluid"/>
-                <Link to="/detail">Shadow Fighter II</Link>
+          {sortedOperators.map((operator, index) => (
+            <div key={operator.id} className="col-lg-6 col-md-9 mobile-m-auto">
+              <div className={`popular-item ${index % 2 === 1 ? 'right' : ''} ${index === sortedOperators.length - 1 ? 'mb-0' : ''}`}>
+                <p>{new Date().getFullYear()}</p>
+                <div className={`col-lg-10 ${index % 2 === 1 ? 'me-auto' : 'ms-auto'}`}>
+                  <img
+                    style={{ width: '530px', height: '663px', objectFit: 'contain', background: 'black' }}
+                    src={operator.imageURL} alt={operator.title} className="img-fluid" />
+                  <Link to="/detail">{operator.title.length > 50 ? `${operator.title.substring(0, 50)}...` : operator.title}</Link>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="col-lg-6 col-md-9 mobile-m-auto">
-            <div className="popular-item right">
-              <p>2018</p>
-              <div className="col-lg-10 me-auto">
-                <img src="/assets/images/popular2.png" alt="comic-book" className="img-fluid"/>
-                <Link to="/detail">Super Hero V</Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6 col-md-9 ms-auto mobile-m-auto">
-            <div className="popular-item">
-              <p>2017</p>
-              <div className="col-lg-10 ms-auto">
-                <img src="/assets/images/popular4.png" alt="comic-book" className="img-fluid"/>
-                <Link to="/detail">Power Ranger X</Link>
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-6 col-md-9 mobile-m-auto">
-            <div className="popular-item right mb-0">
-              <p>2016</p>
-              <div className="col-lg-10 me-auto">
-                <img src="/assets/images/popular3.png" alt="comic-book" className="img-fluid"/>
-                <Link to="/detail">Dr. Stranger</Link>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

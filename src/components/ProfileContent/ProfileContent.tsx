@@ -12,7 +12,7 @@ const ProfileContent: React.FC = () => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_USER_PROFILE_URL}/action/userId`, {
+                const response = await fetch(`${process.env.REACT_APP_USER_PROFILE_URL}/entity/userId?userId=${userId}`, {
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'

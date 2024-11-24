@@ -28,7 +28,7 @@ const ComicDetails: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}/nanoId/${nanoId}`, {
+        const response = await fetch(`${process.env.REACT_APP_ANON_BOOK_URL}/nano-id/${nanoId}`, {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
@@ -53,11 +53,11 @@ const ComicDetails: React.FC = () => {
     try {
       setShowDownloadModal(true);
       setDownloadProgress(0);
-      
+
       const response = await fetch(url);
       const contentLength = response.headers.get('content-length');
       const total = parseInt(contentLength || '0', 10);
-      
+
       const reader = response.body?.getReader();
       if (!reader) {
         throw new Error('Failed to start download');
@@ -66,14 +66,14 @@ const ComicDetails: React.FC = () => {
       let receivedLength = 0;
       const chunks: Uint8Array[] = [];
 
-      while(true) {
-        const {done, value} = await reader.read();
-        
+      while (true) {
+        const { done, value } = await reader.read();
+
         if (done) break;
-        
+
         chunks.push(value);
         receivedLength += value.length;
-        
+
         // Update progress
         const progress = (receivedLength / total) * 100;
         setDownloadProgress(Math.round(progress));
@@ -82,7 +82,7 @@ const ComicDetails: React.FC = () => {
       // Combine all chunks into a single Blob
       const blob = new Blob(chunks);
       const downloadUrl = URL.createObjectURL(blob);
-      
+
       // Create hidden link and trigger download
       const a = document.createElement('a');
       a.style.display = 'none';
@@ -90,17 +90,17 @@ const ComicDetails: React.FC = () => {
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      
+
       // Cleanup
       URL.revokeObjectURL(downloadUrl);
       document.body.removeChild(a);
-      
+
       // Show success message and close modal
       setTimeout(() => {
         setShowDownloadModal(false);
         message.success('Download completed successfully!');
       }, 1000);
-      
+
     } catch (error) {
       console.error('Download error:', error);
       setShowDownloadModal(false);
@@ -120,6 +120,7 @@ const ComicDetails: React.FC = () => {
 
     const nanoId = searchParams.get('id');
     try {
+      // First API call to get download URL
       const response = await fetch(`${process.env.REACT_APP_AUTH_BOOK_URL}/action/download/${nanoId}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -129,9 +130,21 @@ const ComicDetails: React.FC = () => {
       const result: ResultBook = await response.json();
 
       if (result.code === 1 && result.data.downloadURL) {
-        window.open(result.data.downloadURL, '_blank');
-        setShowDownloadModal(false);
-        message.success('Download started in a new tab!');
+        // Second API call to parse the download URL
+        const parseResponse = await fetch(`${process.env.REACT_APP_AUTH_BOOK_URL}/action/parse/${result.data.downloadURL}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        const parseResult = await parseResponse.json();
+
+        if (parseResult.code === 1 && parseResult.data) {
+          // Start download with progress, using .zip extension
+          await downloadFile(parseResult.data, `${book?.title || 'comic'}.zip`);
+        } else {
+          throw new Error('Failed to parse download URL');
+        }
       } else {
         Modal.confirm({
           title: 'Subscription Required',
@@ -183,8 +196,8 @@ const ComicDetails: React.FC = () => {
               <h4>{book?.title || "Loading..."}</h4>
               <span>Storyline</span>
               <p>{book?.description || "No description available"}</p>
-              <button 
-                className="button-primary" 
+              <button
+                className="button-primary"
                 style={{ marginTop: '10px', border: 'none' }}
                 onClick={handleDownload}
               >

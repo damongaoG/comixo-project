@@ -195,13 +195,16 @@ const Payment: React.FC = () => {
             const result = await response.json();
             if (result.code === 1) {
                 setShowSuccess(true);
+                setTimeout(() => {
+                    setLoading(false);
+                }, 300);
             } else {
+                setLoading(false);
                 message.error(result.error?.message || 'Payment failed');
             }
         } catch (error) {
-            message.error('Payment failed');
-        } finally {
             setLoading(false);
+            message.error('Payment failed');
         }
     };
 
@@ -242,28 +245,6 @@ const Payment: React.FC = () => {
         return <Preloader />;
     }
 
-    if (showSuccess) {
-        return (
-            <>
-                <Navbar />
-                <section style={{ padding: '50px 0' }}>
-                    <Result
-                        status="success"
-                        title="Payment Successful!"
-                        subTitle="Your payment has been processed successfully."
-                        extra={[
-                            <Button type="primary" key="home" onClick={() => navigate('/')}>
-                                Back to Home
-                            </Button>
-                        ]}
-                    />
-                </section>
-                <Footer />
-                <CopyRightSection />
-            </>
-        );
-    }
-
     return (
         <>
             <Navbar />
@@ -280,82 +261,97 @@ const Payment: React.FC = () => {
 
             <section id="payment" style={{ padding: '50px 0' }}>
                 <div className="container">
-                    <h2 className="mb-4">Payment Methods</h2>
-                    <Radio.Group
-                        onChange={(e) => setSelectedCardId(e.target.value)}
-                        value={selectedCardId}
-                        style={{ width: '100%' }}
-                    >
-                        <Row gutter={[16, 16]}>
-                            {cards.map((card) => (
-                                <Col key={card.id} xs={24} sm={12} md={8} lg={6}>
-                                    <Radio value={card.id}>
-                                        <Card style={{ position: 'relative' }}>
-                                            <Popconfirm
-                                                title="Delete card"
-                                                description="Are you sure you want to delete this card?"
-                                                onConfirm={(e) => {
-                                                    e?.stopPropagation();
-                                                    handleDeleteCard(card.id);
-                                                }}
-                                                onCancel={(e) => e?.stopPropagation()}
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <DeleteOutlined
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: '12px',
-                                                        right: '12px',
-                                                        fontSize: '16px',
-                                                        color: '#ff4d4f',
-                                                        cursor: 'pointer',
-                                                        zIndex: 1
-                                                    }}
-                                                />
-                                            </Popconfirm>
-                                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
-                                                {getCardIcon(card.card.brand)}
-                                            </div>
-                                            <p>Card Number: **** **** **** {card.card.last4}</p>
-                                            <p>Expires: {card.card.exp_month}/{card.card.exp_year}</p>
-                                        </Card>
-                                    </Radio>
-                                </Col>
-                            ))}
-
-                            {cards.length < 5 && (
-                                <Col xs={24} sm={12} md={8} lg={6}>
-                                    <Card
-                                        style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
-                                        onClick={() => setIsModalVisible(true)}
-                                    >
-                                        <Button type="dashed" icon={<PlusOutlined />}
-                                            onClick={() => setIsModalVisible(true)}
-                                        >
-                                            Add New Card
-                                        </Button>
-                                    </Card>
-                                </Col>
-                            )}
-                        </Row>
-                    </Radio.Group>
-
-                    <div style={{ marginTop: 24, textAlign: 'right' }}>
-                        <Space>
-                            <Button onClick={() => navigate('/')}>
-                                Cancel
-                            </Button>
-                            <Button
-                                type="primary"
-                                disabled={!selectedCardId}
-                                onClick={handleConfirmPayment}
+                    {showSuccess ? (
+                        <Result
+                            status="success"
+                            title="Payment Successful!"
+                            subTitle="Your payment has been processed successfully."
+                            extra={[
+                                <Button type="primary" key="home" onClick={() => navigate('/')}>
+                                    Back to Home
+                                </Button>
+                            ]}
+                        />
+                    ) : (
+                        <>
+                            <h2 className="mb-4">Payment Methods</h2>
+                            <Radio.Group
+                                onChange={(e) => setSelectedCardId(e.target.value)}
+                                value={selectedCardId}
+                                style={{ width: '100%' }}
                             >
-                                Confirm Payment
-                            </Button>
-                        </Space>
-                    </div>
+                                <Row gutter={[16, 16]}>
+                                    {cards.map((card) => (
+                                        <Col key={card.id} xs={24} sm={12} md={8} lg={6}>
+                                            <Radio value={card.id}>
+                                                <Card style={{ position: 'relative' }}>
+                                                    <Popconfirm
+                                                        title="Delete card"
+                                                        description="Are you sure you want to delete this card?"
+                                                        onConfirm={(e) => {
+                                                            e?.stopPropagation();
+                                                            handleDeleteCard(card.id);
+                                                        }}
+                                                        onCancel={(e) => e?.stopPropagation()}
+                                                        okText="Yes"
+                                                        cancelText="No"
+                                                    >
+                                                        <DeleteOutlined
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            style={{
+                                                                position: 'absolute',
+                                                                top: '12px',
+                                                                right: '12px',
+                                                                fontSize: '16px',
+                                                                color: '#ff4d4f',
+                                                                cursor: 'pointer',
+                                                                zIndex: 1
+                                                            }}
+                                                        />
+                                                    </Popconfirm>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 16 }}>
+                                                        {getCardIcon(card.card.brand)}
+                                                    </div>
+                                                    <p>Card Number: **** **** **** {card.card.last4}</p>
+                                                    <p>Expires: {card.card.exp_month}/{card.card.exp_year}</p>
+                                                </Card>
+                                            </Radio>
+                                        </Col>
+                                    ))}
+
+                                    {cards.length < 5 && (
+                                        <Col xs={24} sm={12} md={8} lg={6}>
+                                            <Card
+                                                style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                                                onClick={() => setIsModalVisible(true)}
+                                            >
+                                                <Button type="dashed" icon={<PlusOutlined />}
+                                                    onClick={() => setIsModalVisible(true)}
+                                                >
+                                                    Add New Card
+                                                </Button>
+                                            </Card>
+                                        </Col>
+                                    )}
+                                </Row>
+                            </Radio.Group>
+
+                            <div style={{ marginTop: 24, textAlign: 'right' }}>
+                                <Space>
+                                    <Button onClick={() => navigate('/')}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="primary"
+                                        disabled={!selectedCardId}
+                                        onClick={handleConfirmPayment}
+                                    >
+                                        Confirm Payment
+                                    </Button>
+                                </Space>
+                            </div>
+                        </>
+                    )}
                 </div>
             </section>
 

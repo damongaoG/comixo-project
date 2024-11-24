@@ -49,7 +49,6 @@ const NewComics: React.FC<NewComicsProps> = ({ operators }) => {
                   data-gall="comic1"
                   href={operator.imageURL}
                 >
-                  <i className="fa-solid fa-plus"></i>
                 </a>
                 <div className="comic-item-details">
                   <div className="row">

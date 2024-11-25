@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ResultUserVo } from '../../types/result-user-vo';
 import { Dropdown, MenuProps, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -20,6 +20,7 @@ const items: MenuProps['items'] = [
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isLogin, setLogin } = useContext(AuthContext)
 
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
@@ -29,6 +30,9 @@ const Navbar: React.FC = () => {
       if (result.code === 1) {
         message.success('Successfully logged out')
         setLogin(false);
+        if (location.pathname === '/profile') {
+          navigate('/');
+        }
       } else {
         message.error('Log out failed');
       }

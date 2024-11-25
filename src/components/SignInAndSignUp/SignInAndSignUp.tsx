@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Checkbox, Form, Input, message } from 'antd';
+import { Checkbox, Flex, Form, Input, message } from 'antd';
 import './SignInAndSignUp.css';
 import { CustomerLoginDto } from "../../types/customer-login-dto";
 import { RegistryDto } from "../../types/registry-dto";
@@ -12,6 +12,8 @@ const SignInAndSignUp: React.FC = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { setLogin, setUserId } = useContext(AuthContext);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [captchaTimestamp, setCaptchaTimestamp] = useState(Date.now());
 
   const validateMessages = {
     required: '${label} is required!',
@@ -74,6 +76,45 @@ const SignInAndSignUp: React.FC = () => {
     }
   }
 
+  const refreshCaptcha = () => {
+    setCaptchaTimestamp(Date.now());
+  };
+
+  const handleForgotPassword = async (values: { username: string; verifyCode: string }) => {
+    try {
+      const response = await fetch(process.env.REACT_APP_FORGOT_PASSWORD_URL!, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        message.success('Password reset email has been sent to your email address.');
+        setIsForgotPassword(false);
+        form.resetFields();
+      } else {
+        message.error('Failed to process password reset request.');
+      }
+    } catch (error) {
+      console.error('Failed:', error);
+      message.error('Failed to process password reset request');
+    }
+  };
+
+  React.useEffect(() => {
+    const modal = document.getElementById('contact-modal');
+    if (modal) {
+      modal.addEventListener('show.bs.modal', () => {
+        setIsSignUp(false);
+        setIsForgotPassword(false);
+        form.resetFields();
+      });
+    }
+  }, [form]);
+
   return (
     <div
       className="modal fade"
@@ -86,7 +127,7 @@ const SignInAndSignUp: React.FC = () => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              {!isSignUp ? 'Sign In' : 'Sign Up'}
+              {isForgotPassword ? 'Forgot Password' : (!isSignUp ? 'Sign In' : 'Sign Up')}
             </h5>
             <button
               type="button"
@@ -100,13 +141,49 @@ const SignInAndSignUp: React.FC = () => {
             wrapperCol={{ span: 16 }}
             autoComplete="true"
             initialValues={{ remember: true }}
-            onFinish={onFinish}
+            onFinish={isForgotPassword ? handleForgotPassword : onFinish}
             clearOnDestroy={true}
             validateMessages={validateMessages}
           >
             <div className="modal-body">
+              {/* Forgot Password Form */}
+              {isForgotPassword && (
+                <>
+                  <Form.Item
+                    label="Email"
+                    name="username"
+                    rules={[{ required: true, type: 'email', message: 'Please input your email!' }]}
+                  >
+                    <Input />
+                  </Form.Item>
+
+                  <Form.Item
+                    label="Verification Code"
+                    name="verifyCode"
+                    rules={[{ required: true, message: 'Please input verification code!' }]}
+                  >
+                    <Flex gap="small">
+                      <Input />
+                      <img
+                        src={`${process.env.REACT_APP_KAPTCHA_URL}/forget-password-code?t=${captchaTimestamp}`}
+                        alt="captcha"
+                        style={{ cursor: 'pointer', height: '32px' }}
+                        onClick={refreshCaptcha}
+                      />
+                    </Flex>
+                  </Form.Item>
+
+                  <div>
+                    <a href="#" onClick={() => {
+                      setIsForgotPassword(false);
+                      form.resetFields();
+                    }}>Back to Sign In</a>
+                  </div>
+                </>
+              )}
+
               {/* Sign In Form */}
-              {!isSignUp && (
+              {!isSignUp && !isForgotPassword && (
                 <>
                   <Form.Item<CustomerLoginDto>
                     label="Email"
@@ -124,13 +201,18 @@ const SignInAndSignUp: React.FC = () => {
                     <Input.Password />
                   </Form.Item>
 
-                  <Form.Item<CustomerLoginDto>
-                    name="rememberMe"
-                    valuePropName="checked"
-                  >
-                    <Checkbox>Remember me</Checkbox>
+                  <Form.Item>
+                    <Flex justify="space-between" align="center">
+                      <Form.Item name="remember" valuePropName="checked" noStyle>
+                        <Checkbox>Remember me</Checkbox>
+                      </Form.Item>
+                      <a href="#" onClick={() => {
+                        setIsForgotPassword(true);
+                        form.resetFields();
+                        refreshCaptcha();
+                      }}>Forgot password</a>
+                    </Flex>
                   </Form.Item>
-
                   {!isSignUp && (
                     <div>
                       Are you new here? <a href="#" onClick={handleSignUpClick}>Sign Up</a>
@@ -197,11 +279,17 @@ const SignInAndSignUp: React.FC = () => {
               )}
             </div>
             <div className="modal-footer">
-              <button type="submit" className="button-primary"
-                disabled={loading}
-              >
-                {isSignUp ? 'Register' : 'Login'}
-              </button>
+              {isForgotPassword ? (
+                <>
+                  <button type="submit" className="button-primary">
+                    Confirm
+                  </button>
+                </>
+              ) : (
+                <button type="submit" className="button-primary" disabled={loading}>
+                  {isSignUp ? 'Register' : 'Login'}
+                </button>
+              )}
             </div>
           </Form>
         </div>

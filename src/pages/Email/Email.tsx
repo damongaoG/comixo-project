@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {Button, Empty, Result, Typography} from "antd";
-import {validateEmail} from "./api";
-import {ValidateEmailDto} from "../../types/validate-email-dto";
-import {ResultValidateEmail} from "../../types/result-validate-email";
+import React, { useEffect, useState } from "react";
+import { Button, Empty, Result, Typography } from "antd";
+import { validateEmail } from "./api";
+import { ValidateEmailDto } from "../../types/validate-email-dto";
+import { ResultValidateEmail } from "../../types/result-validate-email";
+import { useNavigate } from "react-router-dom";
 
 const Email: React.FC = () => {
   const [isSuccess, setSuccess] = useState(true);
   const [isLoading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const queryString = window.location.search;
 
@@ -35,6 +37,10 @@ const Email: React.FC = () => {
     verifyEmail().then();
   }, [])
 
+  const handleGoHome = () => {
+    navigate('/');
+  };
+
   return (
     <>
       {isLoading && (
@@ -53,7 +59,11 @@ const Email: React.FC = () => {
           title="Successfully Activated"
           subTitle="Now you can click the button to go home."
           extra={[
-            <Button type="primary" key="console">
+            <Button
+              type="primary"
+              key="console"
+              onClick={handleGoHome}
+            >
               Go Home
             </Button>
           ]}
@@ -63,10 +73,7 @@ const Email: React.FC = () => {
         <Result
           status="error"
           title="Activated Failed"
-          subTitle="Please check and click button to resend email."
-          extra={[
-            <Button key="buy">Resend</Button>
-          ]}
+          subTitle="Please contact our customer service."
         >
         </Result>
       )}

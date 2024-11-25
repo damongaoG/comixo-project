@@ -7,7 +7,8 @@ const Footer: React.FC = () => {
       <div className="container">
         <div className="row">
           <div className="col-lg-3 footer-logo">
-            <Link to="/">Comixo<span>.</span></Link>
+            <Link to="/">Comicloud
+            </Link>
             <img src="/assets/images/footer-icon.png" alt="bat-img"/>
           </div>
           <div className="col-lg-3 col-md-4 footer-menu">

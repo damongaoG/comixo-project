@@ -51,7 +51,9 @@ const Navbar: React.FC = () => {
     <nav className="navbar navbar-expand-lg navbar-light sticky-top">
       <div className="container">
         <Link className="navbar-brand" to="/">
-          Comixo<span>.</span>
+          <img
+            style={{ width: '128px', height: 'auto', objectFit: 'contain' }}
+            src={'assets/images/logo/ComicCloud_Transparent.png'} alt="logo" />
         </Link>
 
         <div className="d-flex d-lg-none align-items-center">

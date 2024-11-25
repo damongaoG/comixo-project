@@ -4,8 +4,8 @@ import { ResultUserVo } from '../../types/result-user-vo';
 import { Dropdown, MenuProps, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { reLogin, userLogOut } from './api';
-import { Result } from '../../types/result';
 import { AuthContext } from '../../AuthContext';
+import { ResultVo } from '../../types/result';
 
 const items: MenuProps['items'] = [
   {
@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
   const handleMenuClick: MenuProps['onClick'] = async (e) => {
     if (e.key === 'logout') {
       const response = await userLogOut();
-      const result: Result = await response.json();
+      const result: ResultVo = await response.json();
       if (result.code === 1) {
         message.success('Successfully logged out')
         setLogin(false);

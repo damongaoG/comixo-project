@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Button, Empty, Result, Typography } from "antd";
-import { validateEmail } from "./api";
-import { ValidateEmailDto } from "../../types/validate-email-dto";
-import { ResultValidateEmail } from "../../types/result-validate-email";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Button, Empty, Result, Typography} from "antd";
+import {validateEmail} from "./api";
+import {ValidateEmailDto} from "../../types/validate-email-dto";
+import {ResultValidateEmail} from "../../types/result-validate-email";
+import {useNavigate} from "react-router-dom";
 
 const Email: React.FC = () => {
   const [isSuccess, setSuccess] = useState(true);

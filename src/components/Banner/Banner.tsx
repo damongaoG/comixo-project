@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { OperatorVo } from '../../types/operator-vo';
+import { Link } from 'react-router-dom';
 
 declare const $: any;
 
@@ -33,13 +34,13 @@ const Banner: React.FC<BannerProps> = ({ operators }) => {
             <span>The Ultimate</span>
             <h3>Comic</h3>
             <h3 className="txt-pos">Book.</h3>
-            <a href="#" className="button-primary">Read Now</a>
+            <Link to={`/detail?id=${operators[0]?.nanoId}`} className="button-primary">Read Now</Link>
           </div>
           <div className="col-10 col-sm-11 col-md-7 col-lg-6 banner-images">
             <img src="/assets/images/banner-icon.png" alt="banner-icon" className="banner-icon" />
             {operators.map((operator, index) => (
               <img
-                key={operator.id}
+                key={operator.nanoId}
                 src={operator.imageURL}
                 alt={operator.title}
                 style={{ width: '524px', height: '644px', objectFit: 'contain', background: 'black' }}

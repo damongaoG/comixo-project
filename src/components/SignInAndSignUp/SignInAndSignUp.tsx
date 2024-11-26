@@ -1,17 +1,18 @@
-import React, { useContext, useState } from "react";
-import { Checkbox, Flex, Form, Input, message } from 'antd';
+import React, {useContext, useState} from "react";
+import {Checkbox, Flex, Form, Input, message} from 'antd';
 import './SignInAndSignUp.css';
-import { CustomerLoginDto } from "../../types/customer-login-dto";
-import { RegistryDto } from "../../types/registry-dto";
-import { signIn, signUp } from "./api";
-import { ResultUserVo } from "../../types/result-user-vo";
-import { AuthContext } from "../../AuthContext";
+import {CustomerLoginDto} from "../../types/customer-login-dto";
+import {RegistryDto} from "../../types/registry-dto";
+import {signIn, signUp} from "./api";
+import {ResultUserVo} from "../../types/result-user-vo";
+import {AuthContext} from "../../AuthContext";
+import {ResultVo} from "../../types/result";
 
 const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const { setLogin, setUserId } = useContext(AuthContext);
+  const {setLogin, setUserId} = useContext(AuthContext);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [captchaTimestamp, setCaptchaTimestamp] = useState(Date.now());
 
@@ -40,8 +41,8 @@ const SignInAndSignUp: React.FC = () => {
     setLoading(true);
     try {
       if (isSignUp) {
-        const { username, password, nickName } = values;
-        const data: RegistryDto = { username, password, nickName };
+        const {username, password, nickName} = values;
+        const data: RegistryDto = {username, password, nickName};
         const response = await signUp(data);
         console.log('sign up response:', response);
         const result: ResultUserVo = response.data;
@@ -52,8 +53,8 @@ const SignInAndSignUp: React.FC = () => {
           message.error('Failed to sign up');
         }
       } else {
-        const { username, password, rememberMe } = values as CustomerLoginDto;
-        const response = await signIn({ username, password, rememberMe });
+        const {username, password, rememberMe} = values as CustomerLoginDto;
+        const response = await signIn({username, password, rememberMe});
         const result: ResultUserVo = response.data;
         if (result.code === 1) {
           setLogin(true);
@@ -91,12 +92,14 @@ const SignInAndSignUp: React.FC = () => {
         body: JSON.stringify(values),
       });
 
-      if (response.ok) {
+      const result: ResultVo = await response.json();
+
+      if (result.code === 1) {
         message.success('Password reset email has been sent to your email address.');
         setIsForgotPassword(false);
         form.resetFields();
       } else {
-        message.error('Failed to process password reset request.');
+        message.error(result.error?.message || 'Failed to process password reset request.');
       }
     } catch (error) {
       console.error('Failed:', error);
@@ -138,9 +141,9 @@ const SignInAndSignUp: React.FC = () => {
           </div>
           <Form
             form={form}
-            wrapperCol={{ span: 16 }}
+            wrapperCol={{span: 16}}
             autoComplete="true"
-            initialValues={{ remember: true }}
+            initialValues={{remember: true}}
             onFinish={isForgotPassword ? handleForgotPassword : onFinish}
             clearOnDestroy={true}
             validateMessages={validateMessages}
@@ -152,22 +155,22 @@ const SignInAndSignUp: React.FC = () => {
                   <Form.Item
                     label="Email"
                     name="username"
-                    rules={[{ required: true, type: 'email', message: 'Please input your email!' }]}
+                    rules={[{required: true, type: 'email', message: 'Please input your email!'}]}
                   >
-                    <Input />
+                    <Input/>
                   </Form.Item>
 
                   <Form.Item
                     label="Verification Code"
                     name="verifyCode"
-                    rules={[{ required: true, message: 'Please input verification code!' }]}
+                    rules={[{required: true, message: 'Please input verification code!'}]}
                   >
                     <Flex gap="small">
-                      <Input />
+                      <Input/>
                       <img
                         src={`${process.env.REACT_APP_KAPTCHA_URL}/forget-password-code?t=${captchaTimestamp}`}
                         alt="captcha"
-                        style={{ cursor: 'pointer', height: '32px' }}
+                        style={{cursor: 'pointer', height: '32px'}}
                         onClick={refreshCaptcha}
                       />
                     </Flex>
@@ -188,17 +191,17 @@ const SignInAndSignUp: React.FC = () => {
                   <Form.Item<CustomerLoginDto>
                     label="Email"
                     name="username"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{required: true, message: 'Please input your email!'}]}
                   >
-                    <Input />
+                    <Input/>
                   </Form.Item>
 
                   <Form.Item<CustomerLoginDto>
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{required: true, message: 'Please input your password!'}]}
                   >
-                    <Input.Password />
+                    <Input.Password/>
                   </Form.Item>
 
                   <Form.Item>
@@ -227,24 +230,24 @@ const SignInAndSignUp: React.FC = () => {
                   <Form.Item<RegistryDto>
                     label="Email"
                     name="username"
-                    rules={[{ required: true, type: 'email' }]}
+                    rules={[{required: true, type: 'email'}]}
                   >
-                    <Input />
+                    <Input/>
                   </Form.Item>
 
                   <Form.Item<RegistryDto>
                     label="Name"
                     name="nickName"
                   >
-                    <Input />
+                    <Input/>
                   </Form.Item>
 
                   <Form.Item<RegistryDto>
                     label="Password"
                     name="password"
-                    rules={[{ required: true, message: 'Please input your password!' }]}
+                    rules={[{required: true, message: 'Please input your password!'}]}
                   >
-                    <Input.Password />
+                    <Input.Password/>
                   </Form.Item>
 
                   <Form.Item
@@ -257,7 +260,7 @@ const SignInAndSignUp: React.FC = () => {
                         required: true,
                         message: 'Please confirm your password!',
                       },
-                      ({ getFieldValue }) => ({
+                      ({getFieldValue}) => ({
                         validator(_, value) {
                           if (!value || getFieldValue('password') === value) {
                             return Promise.resolve();
@@ -267,7 +270,7 @@ const SignInAndSignUp: React.FC = () => {
                       }),
                     ]}
                   >
-                    <Input.Password />
+                    <Input.Password/>
                   </Form.Item>
 
                   {isSignUp && (

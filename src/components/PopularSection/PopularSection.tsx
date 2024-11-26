@@ -30,7 +30,7 @@ const PopularSection: React.FC<PopularSectionProps> = ({ operators }) => {
                   <img
                     style={{ width: '530px', height: '663px', objectFit: 'contain', background: 'black' }}
                     src={operator.imageURL} alt={operator.title} className="img-fluid" />
-                  <Link to="/detail">{operator.title.length > 50 ? `${operator.title.substring(0, 50)}...` : operator.title}</Link>
+                  <Link to={`/detail?id=${operator.nanoId}`}>{operator.title.length > 50 ? `${operator.title.substring(0, 50)}...` : operator.title}</Link>
                 </div>
               </div>
             </div>

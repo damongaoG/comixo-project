@@ -56,7 +56,7 @@ const NewComics: React.FC<NewComicsProps> = ({ operators }) => {
                       <h3>{operator.title.length > 50 ? `${operator.title.substring(0, 50)}...` : operator.title}</h3>
                     </div>
                     <div className="col-4 col-lg-4 text-end">
-                      <Link to="/detail">
+                      <Link to={`/detail?id=${operator.nanoId}`}>
                         <i className="fa-solid fa-arrow-right"></i>
                       </Link>
                     </div>

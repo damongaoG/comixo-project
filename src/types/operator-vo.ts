@@ -3,7 +3,7 @@ export interface OperatorVo {
     pageIndex: number;
     componentIndex: number;
     widgetIndex: number;
-    bookId: string;
+    nanoId: string;
     imageURL: string;
     title: string;
     status: number;

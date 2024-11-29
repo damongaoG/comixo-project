@@ -7,7 +7,7 @@ const Preloader: React.FC = () => {
       if (preloader) {
         preloader.style.display = 'none';
       }
-    }, 1000);
+    }, 5000);
     return () => clearTimeout(timer);
   }, []);
   return (

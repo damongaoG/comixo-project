@@ -34,7 +34,7 @@ const ForgetPassword: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(process.env.REACT_APP_VALIDATE_EMAIL_URL!, {
+      const response = await fetch(process.env.REACT_APP_VALIDATE_FORGET_PASSWORD_URL!, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',

@@ -3,6 +3,6 @@ export interface UserProfile {
   userId: string;
   integral: number;
   stripeClientId: string;
-  currentUsage: number;
+  currentUsage?: number;
   planId?: string;
 }

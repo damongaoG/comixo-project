@@ -2,12 +2,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Button, Form, Input, message} from 'antd';
 import {AuthContext} from '../../AuthContext';
 import {ResultUserProfile} from '../../types/result-user-profile';
+import {Plan} from '../../types/plan';
 
 const ProfileContent: React.FC = () => {
-  const {userEmail, userNickname, userId, setUserNickname} = useContext(AuthContext);
+  const {userEmail, userNickname, userId, setUserNickname, userProfile, setUserProfile} = useContext(AuthContext);
   const [form] = Form.useForm();
-  const [userProfile, setUserProfile] = useState<ResultUserProfile | null>(null);
   const [isNicknameChanged, setIsNicknameChanged] = useState(false);
+  const [availableUsage, setAvailableUsage] = useState<number>(0);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -21,7 +22,7 @@ const ProfileContent: React.FC = () => {
         const data: ResultUserProfile = await response.json();
 
         if (data.code === 1) {
-          setUserProfile(data);
+          setUserProfile(data.data);
           // set form fields value
           form.setFieldsValue({
             email: userEmail,
@@ -39,6 +40,40 @@ const ProfileContent: React.FC = () => {
 
     fetchUserProfile();
   }, [userEmail, userNickname, form]);
+
+  useEffect(() => {
+    const fetchPlanDetails = async () => {
+      if (userProfile?.planId) {
+        try {
+          const response = await fetch(`${process.env.REACT_APP_PLAN_URL}/${userProfile.planId}`, {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          });
+          const data: { code: number, data: Plan } = await response.json();
+
+          if (data.code === 1 && data.data.metadata.usage) {
+            setAvailableUsage(Number(data.data.metadata.usage));
+          }
+        } catch (error) {
+          console.error('Error fetching plan details:', error);
+        }
+      }
+    };
+
+    fetchPlanDetails();
+  }, [userProfile?.planId]);
+
+  useEffect(() => {
+    if (userProfile) {
+      form.setFieldsValue({
+        // ... existing fields ...
+        availableUsage: availableUsage,
+        currentUsage: userProfile.currentUsage || 0,
+      });
+    }
+  }, [userProfile, availableUsage, form]);
 
   const handleNicknameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newNickname = e.target.value;
@@ -100,6 +135,20 @@ const ProfileContent: React.FC = () => {
         <Form.Item
           label="Integral"
           name="integral"
+        >
+          <Input disabled/>
+        </Form.Item>
+
+        <Form.Item
+          label="Available Usage"
+          name="availableUsage"
+        >
+          <Input disabled/>
+        </Form.Item>
+
+        <Form.Item
+          label="Current Usage"
+          name="currentUsage"
         >
           <Input disabled/>
         </Form.Item>

@@ -12,7 +12,7 @@ const SignInAndSignUp: React.FC = () => {
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const {setLogin, setUserId} = useContext(AuthContext);
+  const {setLogin, setUserId, setUserProfile} = useContext(AuthContext);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [captchaTimestamp, setCaptchaTimestamp] = useState(Date.now());
 
@@ -35,6 +35,24 @@ const SignInAndSignUp: React.FC = () => {
   const handleSignInClick = () => {
     setIsSignUp(false);
     form.resetFields();
+  };
+
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_USER_PROFILE_URL}/by/user-id/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        }
+      });
+      const result = await response.json();
+      if (result.code === 1) {
+        setUserProfile(result.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user profile:', error);
+    }
   };
 
   const onFinish = async (values: any) => {
@@ -60,6 +78,7 @@ const SignInAndSignUp: React.FC = () => {
           setLogin(true);
           if (result.data) {
             setUserId(result.data.id);
+            await fetchUserProfile(result.data.id);
           }
           const closeButton = document.querySelector('.modal .btn-close');
           if (closeButton) {

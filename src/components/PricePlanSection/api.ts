@@ -12,7 +12,7 @@ export const listProducts = async () => {
 }
 
 export const listPlans = async (id: string) => {
-  return fetch(process.env.REACT_APP_PRODUCT_URL! + `/plans/${id}`, {
+  return fetch(process.env.REACT_APP_PLAN_URL! + `/by/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

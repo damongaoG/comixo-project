@@ -7,13 +7,21 @@ import { useNavigate } from 'react-router-dom';
 
 const PricePlanSection: React.FC = () => {
   const [plans, setPlans] = useState<Plan[]>([]);
-  const { isLogin } = useContext(AuthContext);
+  const { isLogin, userProfile } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  const isCurrentPlan = (planId: string) => {
+    return userProfile?.planId === planId;
+  };
 
   usePlan(setPlans);
 
   const handleChoosePlan = (e: React.MouseEvent, plan: Plan) => {
     e.preventDefault();
+
+    if (isCurrentPlan(plan.id)) {
+      return; // Do nothing if it's the current plan
+    }
 
     if (!isLogin) {
       // If user is not logged in, show the login modal
@@ -62,10 +70,11 @@ const PricePlanSection: React.FC = () => {
                       <div className="price-btn">
                         <a
                           href="#"
-                          className="button-secondary"
+                          className={`button-secondary ${isCurrentPlan(plan.id) ? 'disabled' : ''}`}
                           onClick={(e) => handleChoosePlan(e, plan)}
+                          style={{ pointerEvents: isCurrentPlan(plan.id) ? 'none' : 'auto' }}
                         >
-                          Choose Plan
+                          {isCurrentPlan(plan.id) ? 'Current Plan' : 'Choose Plan'}
                         </a>
                       </div>
                     </div>

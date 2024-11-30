@@ -12,6 +12,7 @@ import Preloader from "../../components/Preloader/Preloader";
 import {CardVO} from "../../types/card-vo";
 import {CardElement, Elements, useElements, useStripe} from "@stripe/react-stripe-js";
 import {loadStripe} from "@stripe/stripe-js";
+import { fetchUserProfileById } from '../../api/userProfile';
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY!);
@@ -128,7 +129,7 @@ const CardInputForm = ({userId, onSuccess, onCancel}: {
 };
 
 const Payment: React.FC = () => {
-  const {isLogin, isLoading, userId} = useContext(AuthContext);
+  const {isLogin, isLoading, userId, setUserProfile} = useContext(AuthContext);
   const navigate = useNavigate();
   const [cards, setCards] = useState<CardVO[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -171,6 +172,13 @@ const Payment: React.FC = () => {
     }
   }, [isLogin, isLoading, navigate, planId]);
 
+  const fetchUserProfile = async (userId: string) => {
+    const profile = await fetchUserProfileById(userId);
+    if (profile) {
+      setUserProfile(profile);
+    }
+  };
+
   const handleConfirmPayment = async () => {
     try {
       setLoading(true);
@@ -189,6 +197,9 @@ const Payment: React.FC = () => {
 
       const result = await response.json();
       if (result.code === 1) {
+        if (userId) {
+          await fetchUserProfile(userId);
+        }
         setShowSuccess(true);
         setLoading(false);
       } else {
